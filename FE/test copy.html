@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Cloning</title>
+    <style>
+        .clonePlaceholder{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="navBar" class="navbar">
+        <h1>Navigation Bar</h1>
+    </div>
+
+    <div id="footer" class="footer">
+        <h1>Footer</h1>
+    </div>
+
+    <!-- Placeholder for cloned elements -->
+    <div class="clonePlaceholder">
+        {{footer}}
+    </div>
+    <div class="clonePlaceholder">
+        {{navBar}}
+    </div>
+
+<script>
+function cloneElementAndReplace(placeholders) {
+    placeholders.forEach(function(placeholder) {
+        var id = placeholder.replace('{{', '').replace('}}', ''); // Extracting ID from placeholder
+        var originalElement = document.getElementById(id);
+        if (originalElement) {
+            var clone = originalElement.cloneNode(true);
+            // Add suffix to make ID unique
+            clone.id = id + '_' + Math.floor(Math.random() * 1000); // Appending random number
+            // Find the parent element containing the placeholder
+            var parentElement = findParentWithPlaceholder(placeholder);
+            if (parentElement) {
+                // Replace the placeholder with the cloned element within the parent element
+                var content = parentElement.innerHTML;
+                content = content.replace(placeholder, clone.outerHTML);
+                parentElement.innerHTML = content;
+            }
+        }
+    });
+}
+function findParentWithPlaceholder(placeholder) {
+    var allElements = document.querySelectorAll('*');
+    for (var i = 0; i < allElements.length; i++) {
+        var element = allElements[i];
+        if (element.textContent && element.textContent.includes(placeholder)) {
+            return element;
+        }
+    }
+    return null;
+}
+// Call the function with the placeholders present in the body
+
+var content = document.body.innerHTML;
+var placeholders = content.match(/{{(.*?)}}/g); // Extracting all placeholders
+setTimeout(() => {
+cloneElementAndReplace(placeholders);
+var placeholderElements = document.querySelectorAll('.clonePlaceholder');
+placeholderElements.forEach(function(placeholderElement) {
+placeholderElement.classList.remove('clonePlaceholder');
+});
+}, 2800);
+</script>
+</body>
+</html>
+

@@ -1,0 +1,62 @@
+.btn-google {
+  background-color: rgb(224, 224, 224);
+  width: 100%;
+  color: black;
+  border-radius: 5px;
+
+  width: 100%;
+  height: 50px;
+  border-radius: 3px;
+  text-align: center;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  line-height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  font-weight: 600;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.btn-google:hover {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.btn-google img {
+  width: 20px;
+}
+.or-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: #ddd;
+  margin: 0 10px;
+}
+
+.or-text {
+  color: #555;
+  font-weight: bold;
+}
+.devis img {
+  width: 100%;
+}
+.alred {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px !important;
+  color: black !important;
+  font-size: 20px;
+}
+
+.alred a {
+  color: blue;
+}

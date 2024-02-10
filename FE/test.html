@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Cloning</title>
+    <style>
+        .clonePlaceholder {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="navBar" class="navbar">
+        <h1>Navigation Bar</h1>
+    </div>
+    <div class="asa" id="my">
+        ashsasdas
+    </div>
+
+    <div id="footer" class="footer">
+        <h1>Footer</h1>
+    </div>
+
+    <!-- Placeholder for cloned elements -->
+    <div class="clonePlaceholder"  id="navBarPlaceholder">
+        {{footer}}
+    </div>
+    <div class="clonePlaceholder"  id="myPlaceholder">
+        {{my}}
+    </div>
+    <div class="clonePlaceholder" id="navBarPlaceholder">
+        {{navBar}}
+    </div>
+
+    <script>
+        function cloneElementAndReplace(placeholders) {
+            placeholders.forEach(function(placeholder) {
+                var id = placeholder.id.replace('Placeholder', ''); // Extracting ID from placeholder
+                var originalElement = document.getElementById(id);
+                if (originalElement) {
+                    var clone = originalElement.cloneNode(true);
+                    // Add suffix to make ID unique
+                    clone.id = id + '_' + Math.floor(Math.random() * 1000); // Appending random number
+                    // Replace the placeholder with the cloned element
+                    var placeholderElement = document.getElementById(placeholder.id);
+                    if (placeholderElement) {
+                        placeholderElement.parentNode.replaceChild(clone, placeholderElement);
+                    }
+                }
+            });
+        }
+
+        // Call the function with the placeholders present in the body
+        var placeholders = document.querySelectorAll('.clonePlaceholder');
+        cloneElementAndReplace(placeholders);
+        // Show placeholders after cloning
+        placeholders.forEach(function(placeholder) {
+            placeholder.style.display = 'block';
+        });
+        setTimeout(() => {
+        }, 2800);
+    </script>
+</body>
+</html>
