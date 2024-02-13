@@ -5,7 +5,7 @@ module.exports = async (email, subject, text) => {
     const transporter = nodemailer.createTransport({
       host:'sandbox.smtp.mailtrap.io',
       // service: process.env.SERVICE,
-      port: Number( process.env.EMAIL_PORT), ,
+      port: Number(process.env.EMAIL_PORT), 
       //   secure: Boolean(process.env.SECURE),
       auth: {
         user:process.env.USER,
