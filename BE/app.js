@@ -16,6 +16,7 @@ let ALLOWED_ORIGINS = [
   "https://fintch.io",
   "https://www.fintch.io",
   "http://localhost:5173",
+  "http://localhost:3000"
 ];
 app.use((req, res, next) => {
   let origin = req.headers.origin;
@@ -56,6 +57,10 @@ app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 // All Routes
 const user = require("./routes/userRoute");
+const course = require("./routes/courseRoute");
+const videos = require("./routes/videoRoute");
 app.use("/api/v1", user);
+app.use("/api/v1", course);
+app.use("/api/v1", videos);
 
 module.exports = app;

@@ -1,8 +1,9 @@
 const app = require("./app");
-
+const cors = require("cors"); 
 var bodyParser = require("body-parser");
 const { errorMiddleware } = require("./middlewares/errorMiddleware");
 // Database connect
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 const database = require("./config/database");
 database();

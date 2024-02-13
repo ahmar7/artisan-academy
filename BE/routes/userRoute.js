@@ -27,7 +27,7 @@ router.route("/login").post(loginUser);
 router.route("/logout").get(logoutUser);
 router
   .route("/allUser")
-  .get(isAuthorizedUser, authorizedRoles("admin"), allUser);
+  .get(allUser);
 router
   .route("/singleUser/:id")
   .get(isAuthorizedUser, authorizedRoles("admin"), singleUser);

@@ -21,7 +21,7 @@ import Blogs from "./Pages/Blogs";
 import SinglePost from "./Pages/SinglePost";
 import Contact from "./Pages/Contact";
 import GotoTop from "./Component/GotoTop";
-; import createStore from "react-auth-kit/createStore";
+import createStore from "react-auth-kit/createStore";
 const store = createStore({
   authName: "_auth",
   authType: "cookie",
@@ -30,33 +30,10 @@ const store = createStore({
 });
 export default function RouterData() {
   return (
-    // <AuthProvider store={store}>
-    //   <BrowserRouter>
-    //     <GotoTop />
-    //     <Routes>
-    //       <Route index path="/" element={<Home />} />
-    //       <Route path="/register" element={<RegisterForm />} />
-    //       <Route path="/login" element={<SignForm />} />
-    //       <Route path="/home-2" element={<Home2 />} />
-    //       <Route path="/home-3" element={<Home3 />} />
-    //       <Route path="/course-1" element={<Course1 />} />
-    //       <Route path="/course-2" element={<Course2 />} />
-    //       <Route path="/course-3" element={<Course3 />} />
-    //       <Route path="/single-course" element={<CourseSingle />} />
-    //       <Route path="/about-1" element={<About1 />} />
-    //       <Route path="/about-2" element={<About2 />} />
-    //       <Route path="/instructor" element={<Instructor />} />
-    //       <Route path="/profile" element={<InstructorProfile />} />
-    //       <Route path="/blog" element={<Blogs />} />
-    //       <Route path="/single-post" element={<SinglePost />} />
-    //       <Route path="/contact" element={<Contact />} />
-    //       <Route path="*" element={<Error />} />
 
-    //     </Routes>
-    //   </BrowserRouter>
     // </AuthProvider>
 
-      <AuthProvider authType={"cookie"} authName={"auth"}>
+      // <AuthProvider authType={"cookie"} authName={"auth"}>
       <BrowserRouter>
         {/* <Top /> */}
         <Routes>
@@ -85,6 +62,6 @@ export default function RouterData() {
          
         </Routes>
       </BrowserRouter>
-    </AuthProvider>
+    // </AuthProvider>
   );
 }

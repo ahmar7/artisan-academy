@@ -22,17 +22,17 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     services,
     // role,
   } = req.body;
-  if (
-    !name ||
-    !company ||
-    !email ||
-    !password ||
-    !phone ||
-    !title ||
-    !services
-  ) {
-    return next(new errorHandler("Please fill all the required fields", 500));
-  }
+  // if (
+  //   !name ||
+  //   !company ||
+  //   !email ||
+  //   !password ||
+  //   !phone ||
+  //   !title ||
+  //   !services
+  // ) {
+  //   return next(new errorHandler("Please fill all the required fields", 500));
+  // }
   let findUser = await UserModel.findOne({
     email: req.body.email,
   });
@@ -58,7 +58,7 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     token: crypto.randomBytes(32).toString("hex"),
   }).save();
   let subject = `Email Verification link`;
-  const url = `${process.env.BASE_URL}/users/${createUser._id}/verify/${token.token}`;
+  const url = `http://localhost:4000/api/v1/${createUser._id}/verify/${token.token}`;
   let text = `To activate your account, please click the following link:
 
 ${url}
@@ -66,6 +66,7 @@ The link will be expired after 2 hours`;
   await sendEmail(createUser.email, subject, text);
   res.status(201).send({
     msg: "A verification link has been sent to your email, please verify",
+    url: url,
     success: true,
   });
   // jwtToken(createUser, 201, res);
