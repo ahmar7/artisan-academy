@@ -16,7 +16,8 @@ let ALLOWED_ORIGINS = [
   "https://fintch.io",
   "https://www.fintch.io",
   "http://localhost:5173",
-  "http://localhost:3000"
+  "http://localhost:3000",
+  "https://admin-eight-lemon.vercel.app/"
 ];
 app.use((req, res, next) => {
   let origin = req.headers.origin;
