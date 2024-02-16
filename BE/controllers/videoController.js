@@ -24,13 +24,14 @@ const multer = require('multer');
    
    const myCloud = await cloudinary.uploader.upload(fileUri.content, {
        resource_type: fileType === "video" ? "video" : "raw",
+         format: 'mp4',
    });
    
    
    
    const createdDocument = await VideoModel.create({
     videoLink: myCloud.secure_url,
-    title: name,
+    title: title,
     description: 'Video description', 
 });
 
@@ -52,7 +53,19 @@ const multer = require('multer');
 
 exports.GetCourseVideos = catchAsyncErrors(async (req, res, next) => {
     const courseId = req.params.id;
-    const course = await courseModel.findById(courseId).populate('videos');
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const searchQuery = req.query.search || '';
+
+    const course = await courseModel.findById(courseId).populate({
+        path: 'videos',
+        match: {
+            $or: [
+                { title: { $regex: searchQuery, $options: 'i' } },
+                { description: { $regex: searchQuery, $options: 'i' } },
+            ],
+        },
+    });
 
     if (!course) {
         return res.status(404).json({
@@ -61,86 +74,123 @@ exports.GetCourseVideos = catchAsyncErrors(async (req, res, next) => {
         });
     }
 
-    // Extract videos from the course
     const videos = course.videos;
+
+    // Apply search query on videos
+    const filteredVideos = videos.filter(video =>
+        (video.title && video.title.match(new RegExp(searchQuery, 'i'))) ||
+        (video.description && video.description.match(new RegExp(searchQuery, 'i')))
+    );
+
+    const totalItems = filteredVideos.length;
+    const totalPages = Math.ceil(totalItems / limit);
+    const currentPage = page > totalPages ? totalPages : page;
+
+    const paginatedVideos = filteredVideos.slice((currentPage - 1) * limit, currentPage * limit);
 
     res.status(200).json({
         success: true,
-        videos,
+        videos: paginatedVideos,
+        currentPage,
+        totalPages,
+        totalItems,
     });
 });
 
 
 
+
 exports.UpdateVideo = catchAsyncErrors(async (req, res, next) => {
-    const courseId = req.params.id;
-    const file = req.file;
+    const { courseId, videoId } = req.params;
     const { title, description } = req.body;
-
+    const file = req.file;
+  
     try {
-        // Check if the course exists
-        const existingCourse = await courseModel.findById(courseId);
-        if (!existingCourse) {
-            return res.status(404).json({
-                success: false,
-                msg: 'Course not found',
-            });
-        }
-
-        // Check if the video already exists for the course
-        const existingVideo = await VideoModel.findOne({ title, courseId });
-        
-        // If the video already exists, update it
-        if (existingVideo) {
-            const fileUri = getDataUri(file);
-            const fileType = file.mimetype.split('/')[1];
-            const myCloud = await cloudinary.uploader.upload(fileUri.content, {
-                resource_type: fileType === 'video' ? 'video' : 'raw',
-            });
-
-            existingVideo.videoLink = myCloud.secure_url;
-            existingVideo.title = title || existingVideo.title;
-            existingVideo.description = description || existingVideo.description;
-            await existingVideo.save();
-
-            res.status(200).json({
-                success: true,
-                msg: 'Video updated successfully',
-                updatedVideo: existingVideo,
-            });
-        } else {
-            // If the video does not exist, create a new one
-            const fileUri = getDataUri(file);
-            const fileType = file.mimetype.split('/')[1];
-            const myCloud = await cloudinary.uploader.upload(fileUri.content, {
-                resource_type: fileType === 'video' ? 'video' : 'raw',
-            });
-
-            const createdDocument = await VideoModel.create({
-                videoLink: myCloud.secure_url,
-                title: title || file.originalname,
-                description: description || 'Video description',
-                courseId,
-            });
-
-            // Update the course with the new video
-            await courseModel.findByIdAndUpdate(
-                courseId,
-                { $push: { videos: createdDocument._id } },
-                { new: true, useFindAndModify: false }
-            );
-
-            res.status(201).json({
-                success: true,
-                msg: 'Video created successfully',
-                createdVideo: createdDocument,
-            });
-        }
-    } catch (error) {
-        console.error('Error in creating or updating video:', error);
-        res.status(500).json({
-            success: false,
-            msg: 'Internal Server Error',
+      // Check if the video exists
+      const existingVideo = await VideoModel.findById(videoId);
+  
+      if (!existingVideo) {
+        return res.status(404).json({
+          success: false,
+          msg: 'Video not found',
         });
+      }
+  
+      // Update video information
+      if (title) existingVideo.title = title;
+      if (description) existingVideo.description = description;
+  
+      // Upload new file to Cloudinary if provided
+      if (file) {
+        const fileUri = getDataUri(file);
+        const fileType = file.mimetype.split('/')[1];
+  
+        const myCloud = await cloudinary.uploader.upload(fileUri.content, {
+          resource_type: fileType === 'video' ? 'video' : 'raw',
+          format: 'mp4',
+        });
+  
+        existingVideo.videoLink = myCloud.secure_url;
+      }
+  
+      // Save the updated video document
+      const updatedVideo = await existingVideo.save();
+  
+      // Update the course with the modified video
+      const update = await courseModel.findByIdAndUpdate(courseId, {
+        $set: { 'videos.$[elem]': updatedVideo },
+      }, { arrayFilters: [{ 'elem._id': videoId }] });
+  
+      res.status(200).json({
+        success: true,
+        update,
+        msg: 'Video updated successfully',
+      });
+    } catch (error) {
+      next(new errorHandler(error, 500));
     }
+  });
+
+
+
+
+  exports.DeleteVideo = catchAsyncErrors(async (req, res, next) => {
+    const { courseId, videoId } = req.params;
+  
+    try {
+        let deletedCourse = await VideoModel.findByIdAndDelete
+        ({ _id: videoId });
+    
+  if(!deletedCourse)
+  {
+    return res.status(404).json({
+      success: false,
+      msg: 'Video not found',
+    });
+  }
+ 
+      const update = await courseModel.findByIdAndUpdate(courseId, {
+        $pull: { videos: { _id: videoId } },
+      });
+  
+      res.status(200).json({
+        success: true,
+        update,
+        msg: 'Video deleted successfully',
+      });
+    } catch (error) {
+      next(new errorHandler(error, 500));
+    }
+  });
+
+
+  exports.GetVideobyId = catchAsyncErrors(async (req, res, next) => {
+    const videoId = req.params.id;
+    let singlevideo = await VideoModel.findById({ _id: videoId });
+   
+  res.status(200).send({
+    success: true,
+    msg: "All Courses fetched successfully",
+    singlevideo
+  });
 });

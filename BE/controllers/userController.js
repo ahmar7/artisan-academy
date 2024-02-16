@@ -58,7 +58,7 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     token: crypto.randomBytes(32).toString("hex"),
   }).save();
   let subject = `Email Verification link`;
-  const url = `http://localhost:4000/api/v1/${createUser._id}/verify/${token.token}`;
+  const url = `https://artisian-academy-server.onrender.com/api/v1/${createUser._id}/verify/${token.token}`;
   let text = `To activate your account, please click the following link:
 
 ${url}

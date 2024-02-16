@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const courseVideoSchema = new mongoose.Schema({
   id: Number,
   videoLink: String,
+  poster: String,
   title: String,
   description: String,
  

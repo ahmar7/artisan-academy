@@ -19,11 +19,9 @@ const multer = require('multer');
      level,
   
    } = req.body;
+   console.log(file)
 if (
-     !title ||
-     !description ||
-     !category ||
-     !level||
+    
      !file
    ) {
      return next(new errorHandler("Please fill all the required fields", 500));
@@ -35,6 +33,7 @@ if (
    
    const myCloud = await cloudinary.uploader.upload(fileUri.content, {
        resource_type: fileType === "image" ? "image" : "raw",
+       format: 'png',
    });
    
    const createdDocument = myCloud.secure_url;
@@ -54,15 +53,40 @@ if (
 
 
 
-exports.GetCourse = catchAsyncErrors(async (req, res, next) => {
-    let allCourse = await courseModel.find();
-  res.status(200).send({
-    success: true,
-    msg: "All Courses fetched successfully",
-    allCourse,
-  });
-});
+const ITEMS_PER_PAGE = 5; // Adjust this based on your preference for the number of items per page
 
+exports.GetCourse = catchAsyncErrors(async (req, res, next) => {
+  const { page = 1, search } = req.query;
+
+  try {
+    let query = {};
+
+    // Apply search criteria if 'search' parameter is provided
+    if (search) {
+      query.title = { $regex: search, $options: 'i' };
+    }
+
+    const totalItems = await courseModel.countDocuments(query);
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+
+    const courses = await courseModel.find(query)
+      .skip(skip)
+      .limit(ITEMS_PER_PAGE);
+
+    res.status(200).send({
+      success: true,
+      msg: "Courses fetched successfully",
+      currentPage: +page,
+      totalPages,
+      totalItems,
+      courses,
+    });
+  } catch (error) {
+   
+    next(new errorHandler(error, 500));
+  }
+});
 
 exports.GetCoursebyId = catchAsyncErrors(async (req, res, next) => {
     const courseId = req.params.id;

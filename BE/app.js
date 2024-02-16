@@ -60,8 +60,10 @@ app.use(bodyparser.json());
 const user = require("./routes/userRoute");
 const course = require("./routes/courseRoute");
 const videos = require("./routes/videoRoute");
+const quiz = require("./routes/quizRoute");
 app.use("/api/v1", user);
 app.use("/api/v1", course);
 app.use("/api/v1", videos);
+app.use("/api/v1", quiz);
 
 module.exports = app;
