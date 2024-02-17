@@ -21,7 +21,6 @@ const multer = require('multer');
    } = req.body;
    console.log(file)
 if (
-    
      !file
    ) {
      return next(new errorHandler("Please fill all the required fields", 500));

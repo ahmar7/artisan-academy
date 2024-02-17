@@ -11,7 +11,7 @@ const singleUpload = require("../middlewares/multer");
 const upload = require("../middlewares/MultiFiltes");
 let router = express.Router();
 
-router.route("/course").post(upload,CreateCourse);
+router.route("/course").post(singleUpload,CreateCourse);
 router.route("/course").get(GetCourse);
 router.route("/course/:id").get(GetCoursebyId);
 router.route("/course/:id").patch(singleUpload,UpdateCourse);
