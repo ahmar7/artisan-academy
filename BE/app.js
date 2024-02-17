@@ -13,11 +13,9 @@ app.use(cookieParser());
 
 const cron = require("node-cron");
 let ALLOWED_ORIGINS = [
-  "https://fintch.io",
-  "https://www.fintch.io",
+  "https://admin-eight-lemon.vercel.app",
   "http://localhost:5173",
   "http://localhost:3001",
-  "https://admin-eight-lemon.vercel.app/"
 ];
 app.use((req, res, next) => {
   let origin = req.headers.origin;
