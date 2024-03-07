@@ -10,29 +10,85 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import LatestCourseCard from "../../Component/Cards/LatestCourseCard";
 import ReviewForm from "../../Component/Form/ReviewForm";
+import CircularProgress from '@mui/material/CircularProgress';
 import GotoTop from "../../Component/GotoTop";
-
+import {useAxios} from '../../Api/http.service'
+import { useQuery } from 'react-query'
+import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { useMutation } from 'react-query';
 function CourseSingle() {
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState("Overview");
+  const {  get,post,setBearerToken} = useAxios()
+  const location = useLocation();
+  const navigation = useNavigate();
+  const {token}=useSelector(state=>state.authReducer)
+  const { id } = location.state || {};
+
+  const fetchData = async () => {
+ if(!id) return
+    let endpoint = `/course/${id}`
+
+
+    const response = await get(endpoint)
+   
+  
+
+  return response?.data
+}
+const { data: courseData, isLoading } = useQuery(
+    ['single',id],
+    fetchData,
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false
+    }
+  )
+ 
   const pagination = {
     clickable: true,
     renderBullet: function (index, className) {
       return "<span className=" + className + " myPagination" + "></span>";
     },
   };
-  let content = undefined;
-  useEffect(() => {
-    setIsLoading(false);
-  }, [isLoading]);
+  // let content = undefined;
+  // useEffect(() => {
+  //   setIsLoading(false);
+  // }, [isLoading]);
 
-  if (isLoading) {
-    content = <Preloader />;
-  } else {
-    content = (
-      <>
+  // if (isLoading) {
+  //   content = <Preloader />;
+  // } else {
+  //   content = (
+  
+  //   );
+  // }
+  const handleEnrollment = async() => {
+    setBearerToken(token)
+    const result = await post(`/enroll/${id}`,{})
+  return result.data
+  }
+  const enrollmentMutation = useMutation(
+    handleEnrollment,
+    {
+      onSuccess: (data) => {
+        navigation('/profile')
+      },
+      onError: (error) => {
+         
+        alert(error);
+      },
+    }
+  );
+  return (
+    <>
+    {isLoading ? <Preloader />:
+    <>
         <Header logo="assets/images/logo4.png" joinBtn={true} />
-        <Banner title="Courses Single" background="assets/images/banner5.jpg" />
+        <Banner title={courseData?.singleCourse?.title} background={courseData?.singleCourse?.image} />
         {/* course section start */}
         <section className="course-details-section">
           <div className="container">
@@ -40,16 +96,18 @@ function CourseSingle() {
               <div className="col-lg-9">
                 <div className="single-course-area">
                   <div className="course-top">
-                    <h4>Using Creative Problem Solving</h4>
+                    <h4>{courseData?.singleCourse?.title}</h4>
                     <div className="course-meta">
                       <div className="author">
                         <img src="assets/images/home3/course/a1.png" alt="" />
                         <span>Teacher</span>
-                        <Link to="/">Anthony</Link>
+                        <span>{courseData?.instructors[0].name}</span>
+                        {/* <Link to="/">Anthony</Link> */}
                       </div>
                       <div className="categories">
                         <span>Categories:</span>
-                        <Link to="/">Art & Design</Link>
+                        <span>{courseData?.singleCourse?.category}</span>
+                        {/* <Link to="/">Art & Design</Link> */}
                       </div>
                       <div className="ratings">
                         <span>4.5 (9 Reviews)</span>
@@ -60,13 +118,13 @@ function CourseSingle() {
                         <i className="icon_star"></i>
                       </div>
                     </div>
-                    <div className="course-price">
+                    {/* <div className="course-price">
                       $75.00
                       <span>$92.00</span>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="sc-thumb">
-                    <img src="assets/images/single-course/1.jpg" alt="" />
+                    <img src={courseData?.singleCourse?.image} alt="" />
                   </div>
                   <div className="course-tab-wrapper">
                     <ul className="course-tab-btn nav nav-tabs">
@@ -119,36 +177,9 @@ function CourseSingle() {
                           <div className="overview-content">
                             <h4>Course Description</h4>
                             <p>
-                              You mug tickety-boo bite your arm off David
-                              bamboozled easy peasy in my flat bugger
-                              argy-bargy, Oxford starkers barney bender haggle
-                              barmy A bit of how's your father, pear shaped arse
-                              over tit dropped a clanger cup of char bloke mufty
-                              pukka. He legged it some dodgy chav pardon you
-                              vagabond old bubble and squeak posh young
-                              delinquent mufty Charles quaint, bloke spend a
-                              penny sloshed Harry car boot bugger all mate
-                              bamboozled blatant cack, skive off hanky panky
-                              cheeky chap hotpot burke such a fibber cheeky
-                              bugger blag. Chinwag Eaton owt to do with me
-                              Charles excuse my French cor blimey guvnor bender
-                              give us a bell gosh bamboozled, wind up in my flat
-                              David bog lurgy the full monty cup of char cockup,
-                              brolly bevvy super bubble and squeak well starkers
-                              cobblers smashing. Only a quid amongst well
-                              argy-bargy hotpot bugger all mate chimney pot cup
-                              of char do one barmy fantastic, Eaton bloke barney
-                              blower haggle cheesed off Elizabeth daft.
+                             {courseData?.Curriculum?.description}
                             </p>
-                            <p>
-                              Chimney pot barmy easy peasy he lost his bottle
-                              nancy boy old cor blimey guvnor bog tickety-boo
-                              geeza, Richard on your bike mate down the pub are
-                              you taking the piss cack super hunky-dory haggle I
-                              spend a penny, hanky panky zonked cobblers
-                              spiffing good time cup of tea in my flat faff
-                              about the full monty.
-                            </p>
+                           
                             <h4>Course Description</h4>
                             <ul>
                               <li>
@@ -204,10 +235,12 @@ function CourseSingle() {
                                   aria-expanded="true"
                                   aria-controls="acc_1"
                                 >
-                                  Understanding Customer Service
+                                 Optimizing the Course Learning Context
                                 </button>
                               </h5>
                             </div>
+                            {courseData?.Curriculum?.videos.map((v,index)=>
+(
                             <div
                               id="acc_1"
                               className="collapse show"
@@ -215,244 +248,27 @@ function CourseSingle() {
                               data-parent="#id_1"
                             >
                               <div className="card-body">
-                                <div className="ci-item with-bg">
+                                <div className={`ci-item ${index % 2 === 0 ? 'with-bg' : ''}`}>
                                   <h5>
                                     <i className="icon_menu-square_alt2"></i>
-                                    <Link to="/">
-                                      Identifying Customer Expectations
-                                    </Link>
+                                   
+                                    {v?.title}
+                                   
                                   </h5>
                                   <div className="ci-tools">
-                                    <Link to="/" className="time">
+                                    {/* <Link to="/" className="time">
                                       02 hour
-                                    </Link>
+                                    </Link> */}
                                     <Link to="/" className="lock">
                                       <i className="icon_lock_alt"></i>
                                     </Link>
                                   </div>
                                 </div>
-                                <div className="ci-item">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link to="/">
-                                      Customer Service And The Telephone
-                                    </Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link to="/" className="time">
-                                      04 hour
-                                    </Link>
-                                    <Link to="/" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
-                                <div className="ci-item with-bg">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link to="/">Handling Complaints</Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link to="/" className="time">
-                                      03 hour
-                                    </Link>
-                                    <Link to="/" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
-                                <div className="ci-item">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link to="/">
-                                      Customer Service Skills - Course
-                                      Assessment
-                                    </Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link to="/" className="time">
-                                      03 hour
-                                    </Link>
-                                    <Link to="/" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
-                                <div className="ci-item with-bg">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link to="/">Focusing On The Customer</Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link to="/" className="time">
-                                      01 hour
-                                    </Link>
-                                    <Link to="/" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
+                            
                               </div>
-                            </div>
+                            </div>))}
                           </div>
-                          <div className="curriculum-item" id="id_2">
-                            <div className="card-header" id="cc_2">
-                              <h5 className="mb-0">
-                                <button
-                                  className="btn btn-link"
-                                  data-toggle="collapse"
-                                  data-target="#acc_2"
-                                  aria-expanded="true"
-                                  aria-controls="acc_2"
-                                >
-                                  Handling Complaints
-                                </button>
-                              </h5>
-                            </div>
-                            <div
-                              id="acc_2"
-                              className="collapse show"
-                              aria-labelledby="cc_2"
-                              data-parent="#id_2"
-                            >
-                              <div className="card-body">
-                                <div className="ci-item with-bg">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link href="#">Handling Complaints</Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link href="#" className="time">
-                                      02 hour
-                                    </Link>
-                                    <Link href="#" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
-                                <div className="ci-item">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link href="#">
-                                      Customer Service And The Telephone
-                                    </Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link href="#" className="time">
-                                      04 hour
-                                    </Link>
-                                    <Link href="#" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
-                                <div className="ci-item with-bg">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link href="#">WooCommerce Payments</Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link href="#" className="questions">
-                                      4 questions
-                                    </Link>
-                                    <Link href="#" className="time">
-                                      03 hour
-                                    </Link>
-                                    <Link href="#" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="curriculum-item" id="id_3">
-                            <div className="card-header" id="cc_3">
-                              <h5 className="mb-0">
-                                <button
-                                  className="btn btn-link"
-                                  data-toggle="collapse"
-                                  data-target="#acc_3"
-                                  aria-expanded="true"
-                                  aria-controls="acc_3"
-                                >
-                                  Pellentesque Pretium
-                                </button>
-                              </h5>
-                            </div>
-                            <div
-                              id="acc_3"
-                              className="collapse show"
-                              aria-labelledby="cc_3"
-                              data-parent="#id_3"
-                            >
-                              <div className="card-body">
-                                <div className="ci-item with-bg">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link to="/">How to Use WordPress</Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link to="/" className="time">
-                                      02 hour
-                                    </Link>
-                                    <Link to="/" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
-                                <div className="ci-item">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link to="/">
-                                      Certificate On Theme Development
-                                    </Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link to="/" className="time">
-                                      04 hour
-                                    </Link>
-                                    <Link to="/" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
-                                <div className="ci-item with-bg">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link to="/">Focusing On The Customer</Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link to="/" className="questions">
-                                      4 questions
-                                    </Link>
-                                    <Link to="/" className="time">
-                                      03 hour
-                                    </Link>
-                                    <Link to="/" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
-                                <div className="ci-item">
-                                  <h5>
-                                    <i className="icon_menu-square_alt2"></i>
-                                    <Link to="/">
-                                      Identifying Customer Expectations
-                                    </Link>
-                                  </h5>
-                                  <div className="ci-tools">
-                                    <Link to="/" className="time">
-                                      03 hour
-                                    </Link>
-                                    <Link to="/" className="lock">
-                                      <i className="icon_lock_alt"></i>
-                                    </Link>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                        
                         </div>
                       )}
                       {/* Curriculum Tab  */}
@@ -560,7 +376,7 @@ function CourseSingle() {
                       )}
                       {/* Instructors Tab  */}
                       {/* Reviews Tab  */}
-                      {activeView === "Reviews" && (
+                      {/* {activeView === "Reviews" && (
                         <div
                           className="tab-pane fade in show active"
                           id="reviews"
@@ -760,7 +576,7 @@ function CourseSingle() {
                             </div>
                           </div>
                         </div>
-                      )}
+                      )} */}
                       {/*  Reviews Tab  */}
                     </div>
                     {/* Tab Content  */}
@@ -803,7 +619,7 @@ function CourseSingle() {
                     >
                       {/* Single Slider item  */}
                       <div className="related-course-slider">
-                        {course?.map((item) => (
+                        {courseData?.relativeCourse?.map((item) => (
                           <SwiperSlide key={item.id}>
                             <FeatureCourseCard
                               className="feature-course-item-4"
@@ -824,59 +640,48 @@ function CourseSingle() {
                       <ul>
                         <li>
                           <i className="icon_house_alt"></i>
-                          <span>Instructor: </span> Justin Case
+                          <span>Instructor: </span> {courseData?.instructors[0].name}
                         </li>
                         <li>
                           <i className="icon_document_alt"></i>
-                          <span>Lectures: </span> 14
+                          <span>Lectures Videos: </span> {courseData?.singleCourse?.videos?.length}
                         </li>
                         <li>
                           <i className="icon_clock_alt"></i>
                           <span>Duration: </span> 10 weeks
                         </li>
-                        <li>
+                        {/* <li>
                           <i className="icon_profile"></i>
-                          <span>Enrolled: </span> 75 students
-                        </li>
+                          <span>Enrolled: </span> {courseData?.enrolledStudents?.length} students
+                        </li> */}
                         <li>
                           <i className="icon_cog"></i>
                           <span>Language: </span> English
                         </li>
-                        <li>
+                        {/* <li>
                           <i className="icon_calendar"></i>
                           <span>Deadline: </span> 16 April 2020
-                        </li>
+                        </li> */}
                       </ul>
-                      <Link className="bisylms-btn" to="/">
-                        Enroll Course
-                      </Link>
+                      {token ?<div className="bisylms-btn" onClick={()=>{enrollmentMutation.mutate();}} >
+                      {enrollmentMutation.isLoading ? <CircularProgress  size={18} color="inherit" /> : "Enroll Course"} 
+                  
+                      </div>:<div className="bisylms-btn" onClick={()=>{navigation("/login"); }} >
+                       Enroll Course
+                  
+                      </div>}
+                      
                     </div>
                   </aside>
                   <aside className="widget">
                     <h3 className="widget-title">Latest Courses</h3>
-                    <LatestCourseCard
-                      img="assets/images/course/1.jpg"
-                      name="Using creative problem Solving"
-                      price="24.00"
-                    />
-                    <LatestCourseCard
-                      img="assets/images/course/2.jpg"
-                      name="Fundamentals of UI Design"
-                      price="76.00"
-                      offerPrice="Free"
-                    />
-                    <LatestCourseCard
-                      img="assets/images/course/3.jpg"
-                      name="Making music Other people"
-                      price="76.00"
-                      offerPrice="$46"
-                    />
-                    <LatestCourseCard
-                      img="assets/images/course/4.jpg"
-                      name="Learning jQuery mobile."
-                      price="94.00"
-                      offerPrice="$74.00"
-                    />
+                    {courseData?.latestCourses.map((v)=> <LatestCourseCard
+                      img={v.image}
+                      name={v.title}
+                      price={v.category}
+                    />)}
+                   
+              
                   </aside>
                 </div>
               </div>
@@ -887,9 +692,9 @@ function CourseSingle() {
         <Footer />
         <GotoTop />
       </>
-    );
-  }
-  return content;
+}
+      </>
+  );
 }
 
 export default CourseSingle;

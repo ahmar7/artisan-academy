@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { loginApi } from "../../Api/Service";
+import { loginApi ,loginwithGoogle} from "../../Api/Service";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import {useDispatch} from 'react-redux'
 import { styled } from '@mui/system';
 import './style.css';
+import { useGoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 // import { useSignIn, useIsAuthenticated, useAuthUser } from "react-auth-kit";
-
+import { GoogleLogin } from '@react-oauth/google';
+import {setUserDetails} from '../../store/reducers/auth'
 import CircularProgress from '@mui/material/CircularProgress';
+import { toast } from 'react-toastify';
 const StyledTextField = styled(TextField)({
   marginBottom: '15px',
   width: '100%',
@@ -25,7 +30,7 @@ function Login() {
   const [isCall, setisCall] = useState(false);
   const navigate = useNavigate();
   const [type, setType] = useState("password");
-
+  const dispatch=useDispatch()
   const [userData, setUserData] = useState({
     email: "",
     password: "",
@@ -86,7 +91,7 @@ function Login() {
 
       const loginResponse = await loginApi(data);
 
-      if (loginResponse.success 
+      if (loginResponse
       //   && signIn({
       //   token: loginResponse.token.token,
       //   expiresIn: 4317,
@@ -95,7 +100,8 @@ function Login() {
       //   sameSite: loginResponse,
       // })
       ) {
-        navigate("/dashboard");
+        dispatch(setUserDetails({token:loginResponse?.token,userData:loginResponse?.user}))
+        navigate("/");
       } else {
         setapiError(loginResponse.msg || "Something went wrong, please try again")
         // setErrors({ ...errors, password: "Invalid email or password" });
@@ -121,7 +127,19 @@ function Login() {
   //     navigate("/admin/dashboard");
   //   }
   // }, []);
+const LoginWithGoogle=async (data)=>{
+  const loginResponse = await loginwithGoogle(data);
 
+  if (loginResponse) {
+    dispatch(setUserDetails({token:loginResponse?.token,userData:loginResponse?.user}))
+    navigate("/");
+    toast.success("Login successfully")
+  } else {
+    
+  toast.error("Something went wrong, please try again")
+    
+  }
+}
   return (
     <section className="register-section" style={{ backgroundImage: "url(assets/images/own/bg-main.jpg)", backgroundSize: "cover", backgroundPosition: "center" }}>
        {successMessage && (
@@ -204,10 +222,31 @@ function Login() {
                   <div className="or-text">OR</div>
                   <div className="line"></div>
                 </div>
-
-                <button type="button" className="btn btn-google mt-3">
-                  <img src='assets/images/own/google.svg' /> Sign in with Google</button>
-
+{/* 
+                <button onClick={() => login()} type="button" className=" btn-google mt-3">
+                  
+                  <img src='assets/images/own/google.svg' /> Sign in with Google</button> */}
+<div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center", }}>
+  <GoogleLogin
+    onSuccess={credentialResponse => {
+      const decoded = jwtDecode(credentialResponse.credential);
+    if(decoded)
+    {
+      let data = {
+        email: decoded.email,
+        first_name:decoded.given_name,
+        last_name:decoded.family_name,
+        profile:decoded.picture,
+      };
+      LoginWithGoogle(data)
+    }
+    }}
+    onError={() => {
+      toast.error("Something went wrong, please try again")
+    }}
+    size="large"
+  />
+</div>
 
                 <p className='alred'>Don't have an account? <Link to="/register">Register Now</Link></p>
               </form>

@@ -1,4 +1,4 @@
-import {
+   import {
   deleteApi,
   getApi,
   postApi,
@@ -12,6 +12,9 @@ export const registerApi = (data) => {
 };
 export const loginApi = (data) => {
   return postApi("login", data);
+};
+export const loginwithGoogle = (data) => {
+  return postApi("loginWithGoogle", data);
 };
 export const logoutApi = (data) => {
   return getApi("logout", data);

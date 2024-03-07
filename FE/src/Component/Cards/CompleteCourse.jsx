@@ -1,15 +1,16 @@
 import ProtoTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-function FeatureCourseCard({ course, className, swiper }) {
+function CompleteCourse({ course, className, swiper }) {
   const {
-    image,
+    courseImage,
     courseLink,
     author,
-    title,
+    courseTitle,
     heading,
-    category,
+    courseCategory,
     price,
+    cpdpoint,
     rating,
     reviews,
     videos,
@@ -20,18 +21,18 @@ function FeatureCourseCard({ course, className, swiper }) {
     <div className={!swiper ? "col-lg-4 col-md-6" : ""}>
       <div className={`${className ? className : "feature-course-item-3"}`}>
         <div className="fcf-thumb">
-          <img src={image} alt="" />
-          <Link className="enroll" to={courseLink}>
+          <img src={courseImage} alt="" />
+          {/* <Link className="enroll" to={courseLink}>
             Enroll Now
-          </Link>
+          </Link> */}
         </div>
         <div className="fci-details">
           <Link to={courseLink} className="c-cate">
             <i className="icon_tag_alt"></i>
-            {category}
+            {courseCategory}
           </Link>
           <h4>
-            <Link to="#">{title}</Link>
+            <Link to="#">{courseTitle}</Link>
           </h4>
           <div className="author">
             {/* <img src={author?.image} alt="" /> */}
@@ -39,8 +40,8 @@ function FeatureCourseCard({ course, className, swiper }) {
           </div>
           <div className="price-rate">
             <div className="course-price">
-            <i className="icon_book_alt"></i>
-                {videos?.length} videos
+            <i className="fa-solid fa-coins"></i>
+                {cpdpoint}
             </div>
             <div className="ratings">
               {/* <i className="icon_star"></i>
@@ -55,10 +56,10 @@ function FeatureCourseCard({ course, className, swiper }) {
   );
 }
 
-FeatureCourseCard.propTypes = {
-  course: ProtoTypes.object,
-  className: ProtoTypes.string,
-  swiper: ProtoTypes.bool,
-};
+// FeatureCourseCard.propTypes = {
+//   course: ProtoTypes.object,
+//   className: ProtoTypes.string,
+//   swiper: ProtoTypes.bool,
+// };
 
-export default FeatureCourseCard;
+export default CompleteCourse;

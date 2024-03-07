@@ -1,22 +1,27 @@
 import Prototypes from "prop-types";
 import { Link } from "react-router-dom";
-
+import { useNavigate } from 'react-router-dom';
 function FeatureCard({ course }) {
+  const navigate = useNavigate();
   const {
     title,
-    heading,
-    lesson,
+    description,
+    videos,
+    category,
     student,
-    img,
+    image,
+    quizzes,
     reviews,
     rating,
     price,
     offerPrice,
     author,
     courseLink,
+    _id,
   } = course;
   return (
     <div
+    onClick={()=> navigate(`/single-course`, { state: { id: _id } })}
       className="col-lg-4 col-md-6 shaf-item"
       data-groups='["all", "science"]'
     >
@@ -24,18 +29,18 @@ function FeatureCard({ course }) {
         <div className="flipper">
           <div className="front">
             <div className="fcf-thumb">
-              <img src={img} alt="" />
+              <img src={image} alt="" />
             </div>
-            <p>{title}</p>
-            <h4>{heading}</h4>
+            <p>{category}</p>
+            <h4>{title}</h4>
             <div className="fcf-bottom">
               <Link to={courseLink}>
                 <i className="icon_book_alt"></i>
-                {lesson} Lessons
+                {videos.length} Lessons
               </Link>
               <Link to={courseLink}>
                 <i className="icon_profile"></i>
-                {student}
+                {quizzes.length} MCQ
               </Link>
             </div>
           </div>
@@ -47,9 +52,10 @@ function FeatureCard({ course }) {
               {title}
             </Link>
             <h4>
-              <Link to={courseLink}>{heading}</Link>
+              {/* <Link to={courseLink}>{heading}</Link> */}
             </h4>
-            <div className="ratings">
+            <h4>{description}</h4>
+            {/* <div className="ratings">
               <i className="icon_star"></i>
               <i className="icon_star"></i>
               <i className="icon_star"></i>
@@ -58,23 +64,24 @@ function FeatureCard({ course }) {
               <span>
                 {rating} ({reviews} Reviews)
               </span>
-            </div>
-            <div className="course-price">
+            </div> */}
+            {/* <div className="course-price">
               ${offerPrice}
               <span>${price}</span>
-            </div>
-            <div className="author">
+            </div> */}
+            {/* <div className="author">
               <img src={author.img} alt="" />
               <Link to={author.profileLink}>{author.name}</Link>
-            </div>
+            </div> */}
             <div className="fcf-bottom">
               <Link to={courseLink}>
                 <i className="icon_book_alt"></i>
-                {lesson} Lessons
+                {videos.length} Lessons
               </Link>
               <Link to={courseLink}>
-                <i className="icon_profile"></i>
-                {student}
+             
+                {/* <i className="icon_profile"></i> */}
+                {quizzes.length} MCQ
               </Link>
             </div>
           </div>

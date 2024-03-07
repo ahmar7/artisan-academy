@@ -2,11 +2,18 @@ import ProtoTypes from "prop-types";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import useWindowPosition from "../../Hooks/useWindowPosition";
-
+import Logout from "../Login/Logout";
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 function Header({ className, logo, joinBtn, search }) {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
+  const {token} = useSelector(state => state.authReducer)
   const [activeMobileSubMenu, setActiveSubMobileMenu] = useState(false);
   const windowPosition = useWindowPosition();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+
   return (
     <header
       className={`${className ? className : "header-01"} sticky ${windowPosition > 0 && "fix-header animated fadeInDown"
@@ -18,11 +25,13 @@ function Header({ className, logo, joinBtn, search }) {
             <nav className="navbar navbar-expand-lg">
               {/* logo Start */}
               <Link className="navbar-brand" to="/">
-                <img
-                  src="assets/images/logo.png" alt="" />
+                {(currentPath=="/" || currentPath=="/login" || currentPath=="/register" )?  <img
+                  src="assets/images/logo.png" alt="" />:  <img
+                  src="assets/images/logoBlue.png" /> }
+              
                 <img
                   className="sticky-logo"
-                  src="assets/images/logo.png"
+                  src="assets/images/logoBlue.png"
                   alt=""
                 />
               </Link>
@@ -127,7 +136,7 @@ function Header({ className, logo, joinBtn, search }) {
               {/* Nav Menu End  */}
 
               {/*  User Btn  */}
-              {joinBtn && (
+              {joinBtn && !token && (
                 <a href="/login" className="user-btn">
                   <i className="ti-user"></i>
                 </a>
@@ -135,12 +144,12 @@ function Header({ className, logo, joinBtn, search }) {
               {/*  User Btn  */}
 
               {/* Join Btn  */}
-              {joinBtn && (
+              {joinBtn && !token&& (
                 <Link to="/register" className="join-btn">
                   Join for Free
                 </Link>
               )}
-
+{token && <Logout />}
               {/* Join Btn   */}
               {search && (
                 <form className="search-box" method="post" action="#">

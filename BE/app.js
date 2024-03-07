@@ -15,26 +15,30 @@ const cron = require("node-cron");
 let ALLOWED_ORIGINS = [
   "https://admin-eight-lemon.vercel.app",
   "http://localhost:5173",
-  "http://localhost:3001",
+  "http://localhost:3000",
+  "http://localhost:5173/",
+  'http://localhost:4000/'
+
 ];
 app.use((req, res, next) => {
   let origin = req.headers.origin;
   let theOrigin =
     ALLOWED_ORIGINS.indexOf(origin) >= 0 ? origin : ALLOWED_ORIGINS[0];
+
   res.header("Access-Control-Allow-Origin", theOrigin);
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
-
   res.header("Access-Control-Allow-Credentials", true);
-
   res.header(
     "Access-Control-Allow-Methods",
-    "POST, GET, PUT, PATCH,DELETE, OPTIONS"
+    "POST, GET, PUT, PATCH, DELETE, OPTIONS"
   );
+
   next();
 });
+
 cron.schedule("*/10 * * * *", () => {
   try {
     // Your code to be executed every 15 minutes
@@ -59,9 +63,13 @@ const user = require("./routes/userRoute");
 const course = require("./routes/courseRoute");
 const videos = require("./routes/videoRoute");
 const quiz = require("./routes/quizRoute");
+const profile = require("./routes/profileRoute");
+const enrollment = require("./routes/enrollmentRoute");
 app.use("/api/v1", user);
 app.use("/api/v1", course);
 app.use("/api/v1", videos);
 app.use("/api/v1", quiz);
+app.use("/api/v1", enrollment);
+app.use("/api/v1", profile);
 
 module.exports = app;

@@ -22,6 +22,9 @@ import SinglePost from "./Pages/SinglePost";
 import Contact from "./Pages/Contact";
 import GotoTop from "./Component/GotoTop";
 import createStore from "react-auth-kit/createStore";
+import Videos from "./Pages/Videos";
+import PrivateRoute from "./PrivateRoute";
+import { useSelector } from 'react-redux';
 const store = createStore({
   authName: "_auth",
   authType: "cookie",
@@ -29,6 +32,7 @@ const store = createStore({
   cookieSecure: window.location.protocol === "https:",
 });
 export default function RouterData() {
+  const {token} =useSelector(state=>state.authReducer)
   return (
 
     // </AuthProvider>
@@ -45,14 +49,15 @@ export default function RouterData() {
           <Route path="/course-1" element={<Course1 />} />
           <Route path="/course-2" element={<Course2 />} />
           <Route path="/course-3" element={<Course3 />} />
+          <Route path="/videos" element={<Videos />} />
           <Route path="/single-course" element={<CourseSingle />} />
           <Route path="/about-1" element={<About1 />} />
           <Route path="/about-2" element={<About2 />} />
           <Route path="/instructor" element={<Instructor />} />
           <Route path="/profile" element={
-            <RequireAuth loginPath={"/auth/login"}>
+           <PrivateRoute  auth={token}>
               <InstructorProfile />
-            </RequireAuth>
+            </PrivateRoute>
           }   />
           <Route path="/blog" element={<Blogs />} />
           <Route path="/single-post" element={<SinglePost />} />

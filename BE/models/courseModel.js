@@ -11,6 +11,6 @@ const courseSchema = new mongoose.Schema({
   videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
 });
 
-const courseModel = mongoose.model('Item', courseSchema);
+const courseModel = mongoose.model('Course', courseSchema);
 
 module.exports = courseModel;

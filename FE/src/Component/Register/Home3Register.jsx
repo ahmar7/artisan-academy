@@ -73,15 +73,15 @@ function Home3Register() {
     }
 
     // Validate password length
-    if (name === "password") {
-      if (/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{15,}$/.test(value)) {
-        setverifyP(true);
-        setErrors({ ...errors, [name]: "" });
-      } else {
-        setverifyP(false);
-        setErrors({ ...errors, [name]: "Password should have at least 15 alphanumeric characters with one capital letter" });
-      }
-    }
+    // if (name === "password") {
+    //   if (/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{5,}$/.test(value)) {
+    //     setverifyP(true);
+    //     setErrors({ ...errors, [name]: "" });
+    //   } else {
+    //     setverifyP(false);
+    //     setErrors({ ...errors, [name]: "Password should have at least 15 alphanumeric characters with one capital letter" });
+    //   }
+    // }
   };
 
   const Register = async (e) => {

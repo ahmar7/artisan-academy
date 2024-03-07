@@ -10,7 +10,9 @@ let userSchema = new mongoose.Schema({
     minLength: [2, "Name will have more than 3 characters"],
     trim: true,
   },
-
+profile:{
+  type: String,
+},
   email: {
     type: String,
     required: [true, "Please enter your email"],
@@ -19,30 +21,70 @@ let userSchema = new mongoose.Schema({
     unique: [true, "Email already exists"],
     validate: [validator.isEmail, "Please enter a valid Email"],
   },
+  Enrolment: [
+    {
+      courseId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course', // Replace with the actual model name if needed
+      },
+      enrolledAt: {
+        type: Date,
+        default: Date.now,
+      },
+      videosCompleted: [
+        {
+          videoId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Video', // Replace with the actual model name if needed
+          },
+          completedAt: {
+            type: Date,
+          },
+        },
+      ],
+      quizTaken: {
+        type: Boolean,
+        default: false,
+      },
+      quizPoints: {
+        type: Number,
+        default: 0,
+      },
+    },
+  ],
+  completeCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
+  cpdPoints: {
+    type: Number,
+    default: 0,
+  },
+  userLastActive: {
+    type: Date,
+    default: Date.now,
+  },  
   phone: {
     type: Number,
-    required: [true, "Please enter your Number"],
+    // required: [true, "Please enter your Number"],
     trim: true,
   },
   company: {
     type: String,
-    required: [true, "Please enter your Company"],
+    // required: [true, "Please enter your Company"],
     trim: true,
   },
   title: {
     type: String,
-    required: [true, "Please enter your Title"],
+    // required: [true, "Please enter your Title"],
     trim: true,
   },
 
   services: {
     type: String,
-    required: [true, "Please enter your speciality"],
+    // required: [true, "Please enter your speciality"],
     trim: true,
   },
   password: {
     type: String,
-    required: [true, "Please enter your Password"],
+    // required: [true, "Please enter your Password"],
     minLength: [8, "Password should be more than 8 characters"],
     // It will not come in find() method
   },

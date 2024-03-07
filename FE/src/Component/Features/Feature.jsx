@@ -1,8 +1,38 @@
 import { useState } from "react";
 import { course } from "../../Data/course";
 import FeatureCard from "../Cards/FeatureCard";
+import {useAxios} from '../../Api/http.service'
+import { useQuery } from 'react-query'
 function Feature() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const {  get } = useAxios()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchText, setSearchText] = useState('')
+  const fetchData = async () => {
+
+      let endpoint = `/course?page=${currentPage}`
+
+      if (searchText) {
+        endpoint = `/course?page=${currentPage}&search=${searchText}`
+      }
+  
+      const response = await get(endpoint)
+     
+      if (response) {
+        setCurrentPage(response?.data?.currentPage)
+      }
+ 
+    return response?.data
+  }
+  const { data: courseData, isLoading } = useQuery(
+      ['course',currentPage, searchText],
+      fetchData,
+      {
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false
+      }
+    )
+ console.log(courseData,"course")
   return (
     <section className="feature-course-section">
       <div className="container">
@@ -53,13 +83,7 @@ function Feature() {
           </div>
         </div>
         <div className="row shafull-container">
-          {course
-            ?.filter((course) =>
-              activeCategory === "All"
-                ? course
-                : course.category.find((item) => item === activeCategory)
-            )
-            .map((course) => (
+          {courseData?.courses.map((course) => (
               <FeatureCard course={course} key={course.id} />
             ))}
         </div>

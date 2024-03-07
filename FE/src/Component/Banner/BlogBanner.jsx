@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
-function BlogBanner() {
+function BlogBanner({course}) {
   return (
     <section
       className="page-banner single-p-banner"
-      style={{ backgroundImage: "url(assets/images/banner2.jpg)" }}
+      style={{ backgroundImage: `url(${course?.image})` }}
     >
       <div className="container">
         <div className="row">
@@ -13,16 +13,16 @@ function BlogBanner() {
               Education
             </Link>
             <h2 className="banner-title">
-              Build a full web chat app From Scratch.
+              {course?.title}
             </h2>
-            <div className="bp-meta">
+            {/* <div className="bp-meta">
               <Link to="#">
                 <i className="icon_clock_alt"></i>April 22, 2020
               </Link>
               <Link to="#">
                 <i className="icon_chat_alt"></i>6 Comments
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

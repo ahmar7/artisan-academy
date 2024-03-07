@@ -10,7 +10,49 @@ const jwtToken = require("../utils/jwtToken");
 const crypto = require("crypto");
 const Token = require("../models/token");
 const sendEmail = require("../utils/sendEmail");
+exports.LoginWithGoogle = catchAsyncErrors(async (req, res, next) => {
+  const { email, first_name, last_name,profile } = req.body;
 
+  try {
+    let user = await UserModel.findOne({ email });
+
+    if (!user) {
+      // If the user doesn't exist, create a new user
+      user = await UserModel.create({
+        name: `${first_name} ${last_name}`,
+        email,
+        profile,
+        role: "user",
+        verified: true,
+      });
+
+      // Generate a new token for the user
+      const token = new Token({
+        userId: user._id,
+        token: crypto.randomBytes(32).toString("hex"),
+      });
+      await token.save();
+
+      // Respond with the JWT token
+      jwtToken(user, 201, res);
+    } else {
+      // If the user already exists, delete existing tokens and generate a new one
+      await Token.deleteMany({ userId: user._id });
+
+      const newToken = new Token({
+        userId: user._id,
+        token: crypto.randomBytes(32).toString("hex"),
+      });
+      await newToken.save();
+
+      // Respond with the JWT token
+      jwtToken(user, 200, res);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
   const {
     name,
@@ -257,13 +299,38 @@ exports.logoutUser = catchAsyncErrors(async (req, res, next) => {
     msg: "User Logged out successfully",
   });
 });
+const ITEMS_PER_PAGE = 6;
 exports.allUser = catchAsyncErrors(async (req, res, next) => {
-  let allUsers = await UserModel.find();
-  res.status(200).send({
-    success: true,
-    msg: "All Users",
-    allUsers,
-  });
+  const { page = 1, search } = req.query;
+
+  try {
+    let query = {};
+
+    // Apply search criteria if 'search' parameter is provided
+    if (search) {
+      query.name = { $regex: search, $options: 'i' };
+    }
+
+    const totalItems = await UserModel.countDocuments(query);
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+
+    const users = await UserModel.find(query)
+      .skip(skip)
+      .limit(ITEMS_PER_PAGE);
+
+    res.status(200).send({
+      success: true,
+      msg: "Users fetched successfully",
+      currentPage: +page,
+      totalPages,
+      totalItems,
+      users,
+    });
+  } catch (error) {
+   
+    next(new errorHandler(error, 500));
+  }
 });
 exports.singleUser = catchAsyncErrors(async (req, res, next) => {
   let { id } = req.params;

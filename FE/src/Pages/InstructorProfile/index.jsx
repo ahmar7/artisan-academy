@@ -7,6 +7,12 @@ import { course } from "../../Data/course";
 import FeatureCourseCard from "../../Component/Cards/FeatureCourseCard";
 import { Link } from "react-router-dom";
 import GotoTop from "../../Component/GotoTop";
+import {useAxios} from '../../Api/http.service'
+import { useQuery } from 'react-query'
+import { useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import ProfileModel from "../../Component/Model/ProfileModel";
+import CompleteCourse from "../../Component/Cards/CompleteCourse";
 
 const purchased = [
   {
@@ -55,8 +61,37 @@ function InstructorProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("Owned");
   const [filter, setFilter] = useState("All");
+  const [isHovered, setIsHovered] = useState(false);
   const [activeData, setActiveData] = useState(purchased);
+  const {  get,post,setBearerToken} = useAxios()
+  const navigation = useNavigate();
+  const {token,userData:userProfile}=useSelector(state=>state.authReducer)
+  const fetchData = async () => {
+    setBearerToken(token)
+       let endpoint = `/profile`
+   
+   
+       const response = await get(endpoint)
+      
+     
+   
+     return response?.data
+   }
+   const { data: userData } = useQuery(
+       ['single'],
+       fetchData,
+       {
+         refetchOnWindowFocus: false,
+         refetchOnReconnect: false
+       }
+     )
+    //  console.log(userData)
   //handle course data
+
+  const progressCourse = userData?.data?.filter((e) => e.cpdpoint === 0);
+  const completeCourse = userData?.data?.filter((e) => e.cpdpoint > 0);
+  const totalPoint=completeCourse?.reduce((acc,curr)=>acc+curr.cpdpoint,0)
+console.log(completeCourse)
   useEffect(() => {
     if (filter === "All") {
       setActiveData(purchased);
@@ -72,7 +107,13 @@ function InstructorProfile() {
   useEffect(() => {
     setIsLoading(false);
   }, [isLoading]);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
 
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
   if (isLoading) {
     content = <Preloader />;
   } else {
@@ -85,19 +126,23 @@ function InstructorProfile() {
             <div className="row">
               <div className="col-lg-3">
                 <div className="teacher-profile">
-                  <div className="teacher-thumb">
-                    <img src="assets/images/home2/teacher/1.png" alt="" />
-                  </div>
+                <div className="teacher-thumb" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <img src={userData?.userData?.profile} alt="" />
+
+
+    </div>
+    <ProfileModel allprofile={userData?.allprofile}/>
+
                   <div className="teacher-meta">
-                    <h5>Dianne Ameter</h5>
-                    <p>Illustrator</p>
+                    <h5>{userProfile?.name}</h5>
+                    <p>{userProfile?.email}</p>
+<h6 style={{marginTop:"20px"}}>CPD point</h6>
+                    <img src='assets/images/point.jpeg' style={{width:"180px",marginTop:"20px"}} alt="" />
                   </div>
-                  <p>
-                    Cup of char skive off bodge bobby blower tickety-boo quaint
-                    a blinding shot pear shaped squiffy harry, young delinquent
-                    grub so I said cuppa faff about bum bag bugger.
-                  </p>
-                  <div className="ab-social">
+                  <h1>
+                 {totalPoint}
+                  </h1>
+                  {/* <div className="ab-social">
                     <h5>Follow Us</h5>
                     <a className="fac" href="#">
                       <i className="social_facebook"></i>
@@ -111,7 +156,7 @@ function InstructorProfile() {
                     <a className="lin" href="#">
                       <i className="social_linkedin"></i>
                     </a>
-                  </div>
+                  </div> */}
                 </div>
               </div>{" "}
               <div className="col-lg-9">
@@ -128,9 +173,9 @@ function InstructorProfile() {
                   <li>
                     <a
                       className={activeTab === "Purchased" ? "active" : ""}
-                      onClick={(e) => setActiveTab(e.target.innerText)}
+                      onClick={(e) => setActiveTab("Purchased")}
                     >
-                      Purchased
+                      Enrollment
                     </a>
                   </li>
                 </ul>
@@ -140,8 +185,8 @@ function InstructorProfile() {
                     <div className="tab-pane fade show in active">
                       <h3 className="course-title">My Courses</h3>
                       <div className="row">
-                        {course.map((item) => (
-                          <FeatureCourseCard
+                        {completeCourse?.map((item) => (
+                          <CompleteCourse
                             course={item}
                             key={item.id}
                             className="feature-course-item-4"
@@ -152,7 +197,7 @@ function InstructorProfile() {
                   )}
                   {activeTab === "Purchased" && (
                     <div className="tab-pane fade show in active">
-                      <ul className="restult-tab-title nav nav-tabs">
+                      {/* <ul className="restult-tab-title nav nav-tabs">
                         <li>
                           <a
                             className={filter === "All" && "active"}
@@ -185,7 +230,7 @@ function InstructorProfile() {
                             Failed
                           </a>
                         </li>
-                      </ul>
+                      </ul> */}
                       {/* Tab Content  */}
                       <div className="tab-content">
                         <div
@@ -199,29 +244,28 @@ function InstructorProfile() {
                               <tr>
                                 <th className="course">Course</th>
                                 <th className="date">Date</th>
-                                <th className="grade">Passing Grade</th>
+                                <th className="grade">Complete vidoes</th>
                                 <th className="progres">Progress</th>
+                                <th className="progres">View</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {activeData?.map((data) => (
+                              {progressCourse.map((data) => (
                                 <tr key={data.id}>
                                   <td className="course">
-                                    <Link to={data.link}>{data.name}</Link>
+                                   {data.courseTitle}
                                   </td>
-                                  <td className="date">{data.date}</td>
-                                  <td className="grade">{data.grade}</td>
+                                  <td className="date">{data.enrolledAt}</td>
+                                  <td className="grade">{data.videosCompleted.length}</td>
                                   <td className="progres">
                                     {data.progress} In Progress
                                   </td>
+                                  <td className="">
+                                 <button   onClick={()=>navigation(`/videos`, { state: { id: data.courseId } })}  style={{border:"none",borderRadius:"4px" ,backgroundColor:"#5838fc", color:"white" ,width:"60px", paddingBlock:'4px'}} className="active">View</button>
+                                  </td>
                                 </tr>
                               ))}
-                              <tr>
-                                <td className="show-item">
-                                  Displaying 1 to {activeData.length} of{" "}
-                                  {activeData.length} courses.
-                                </td>
-                              </tr>
+                            
                             </tbody>
                           </table>
                         </div>

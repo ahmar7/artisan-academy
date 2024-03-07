@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const database = () => {
   mongoose
-    .connect(process.env.DATABASE )
+    .connect('mongodb+srv://ahsan:password-123@cluster0.h3mh35m.mongodb.net/?retryWrites=true&w=majority')
     .then((data) => {
       console.log(`Db connected successfully with ${data.connection.host}`);
     })

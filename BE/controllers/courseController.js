@@ -1,10 +1,12 @@
 
 const courseModel = require("../models/courseModel");
+let UserModel = require("../models/userModel");
 // Usedto handle error
 const errorHandler = require("../utils/errorHandler");
 const getDataUri = require("../utils/dataUri");
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
+const userModel = require("../models/userModel");
 
 // Configure Cloudinary with your API Key and Secret
 
@@ -52,7 +54,7 @@ if (
 
 
 
-const ITEMS_PER_PAGE = 5; // Adjust this based on your preference for the number of items per page
+const ITEMS_PER_PAGE = 6; // Adjust this based on your preference for the number of items per page
 
 exports.GetCourse = catchAsyncErrors(async (req, res, next) => {
   const { page = 1, search } = req.query;
@@ -90,11 +92,21 @@ exports.GetCourse = catchAsyncErrors(async (req, res, next) => {
 exports.GetCoursebyId = catchAsyncErrors(async (req, res, next) => {
     const courseId = req.params.id;
     let singleCourse = await courseModel.findById({ _id: courseId });
-   
+    const latestCourses = await courseModel.find().sort({ createdAt: -1 }).limit(5);
+    const enrolledStudents = await userModel.find({ 'Enrolment.courseId': courseId });
+    const adminUsers = await userModel.find({ role: 'admin' });
+    const otherCoursesInCategory = await courseModel.find({category: singleCourse.category}).limit(5);
+    const Curriculum = await courseModel.findById(courseId).populate('videos');
   res.status(200).send({
     success: true,
     msg: "All Courses fetched successfully",
     singleCourse,
+    latestCourses,
+    enrolledStudents,
+    instructors: adminUsers,
+    relativeCourse:otherCoursesInCategory,
+    Curriculum
+    
   });
 });
 
