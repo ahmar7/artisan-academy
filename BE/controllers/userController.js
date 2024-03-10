@@ -11,7 +11,7 @@ const crypto = require("crypto");
 const Token = require("../models/token");
 const sendEmail = require("../utils/sendEmail");
 exports.LoginWithGoogle = catchAsyncErrors(async (req, res, next) => {
-  const { email, first_name, last_name,profile } = req.body;
+  const { email, first_name, last_name, profile } = req.body;
 
   try {
     let user = await UserModel.findOne({ email });
@@ -50,7 +50,7 @@ exports.LoginWithGoogle = catchAsyncErrors(async (req, res, next) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
@@ -64,6 +64,7 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     services,
     // role,
   } = req.body;
+  console.log("req.body: ", req.body);
   // if (
   //   !name ||
   //   !company ||
@@ -308,16 +309,14 @@ exports.allUser = catchAsyncErrors(async (req, res, next) => {
 
     // Apply search criteria if 'search' parameter is provided
     if (search) {
-      query.name = { $regex: search, $options: 'i' };
+      query.name = { $regex: search, $options: "i" };
     }
 
     const totalItems = await UserModel.countDocuments(query);
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
     const skip = (page - 1) * ITEMS_PER_PAGE;
 
-    const users = await UserModel.find(query)
-      .skip(skip)
-      .limit(ITEMS_PER_PAGE);
+    const users = await UserModel.find(query).skip(skip).limit(ITEMS_PER_PAGE);
 
     res.status(200).send({
       success: true,
@@ -328,7 +327,6 @@ exports.allUser = catchAsyncErrors(async (req, res, next) => {
       users,
     });
   } catch (error) {
-   
     next(new errorHandler(error, 500));
   }
 });

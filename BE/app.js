@@ -14,11 +14,11 @@ app.use(cookieParser());
 const cron = require("node-cron");
 let ALLOWED_ORIGINS = [
   "https://admin-eight-lemon.vercel.app",
+  "https://www.artisanuw.com.au",
+  "https://artisanuw.com.au",
+  "https://artisan-academy.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",
-  "http://localhost:5173/",
-  'http://localhost:4000/'
-
 ];
 app.use((req, res, next) => {
   let origin = req.headers.origin;
