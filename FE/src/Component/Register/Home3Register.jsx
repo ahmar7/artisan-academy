@@ -67,6 +67,7 @@ function Home3Register() {
 
     // Validate email
     if (name === "email" && !/\S+@\S+\.\S+/.test(value)) {
+  
       setErrors({ ...errors, [name]: "Invalid email address" });
     } else {
       setErrors({ ...errors, [name]: "" });
@@ -74,7 +75,8 @@ function Home3Register() {
 
     // Validate password length
     if (name === "password") {
-      if (/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{5,}$/.test(value)) {
+
+      if (value.length >= 15 ) {
         setverifyP(true);
         setErrors({ ...errors, [name]: "" });
       } else {
