@@ -90,8 +90,9 @@ function Login() {
       };
 
       const loginResponse = await loginApi(data);
+      console.log('loginResponse: ', loginResponse);
 
-      if (loginResponse
+      if (loginResponse.success
       //   && signIn({
       //   token: loginResponse.token.token,
       //   expiresIn: 4317,

@@ -2,9 +2,7 @@ const mongoose = require("mongoose");
 
 const database = () => {
   mongoose
-    .connect(
-      "mongodb+srv://ArtisanA:V5RxLkiTEdKMRjoP@cluster0.kk7xmfe.mongodb.net/academy"
-    )
+    .connect(process.env.DATABASE)
     .then((data) => {
       console.log(`Db connected successfully with ${data.connection.host}`);
     })

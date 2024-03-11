@@ -1,11 +1,15 @@
 const app = require("./app");
-const cors = require("cors"); 
+const cors = require("cors");
 var bodyParser = require("body-parser");
 const { errorMiddleware } = require("./middlewares/errorMiddleware");
 
 const authMiddleware = require("./middlewares/authMiddleware");
 // Database connect
+
+const dotnet = require("dotenv");
+dotnet.config({ path: "./.env" });
 app.use(cors());
+
 app.use(bodyParser.urlencoded({ extended: false }));
 const database = require("./config/database");
 database();
@@ -25,7 +29,6 @@ cloudinary.v2.config({
 app.use(errorMiddleware);
 app.use(authMiddleware);
 
-
-let server = app.listen(process.env.PORT, () => {
-  console.log(`server is running at ${process.env.PORT}`);
+let server = app.listen(PORT, () => {
+  console.log(`server is running at ${PORT}`);
 });
