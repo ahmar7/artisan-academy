@@ -20,11 +20,13 @@ import QuizForm from "../../Component/Model/QuizForm";
 function Videos() {
   const [isLoading, setIsLoading] = useState(true);
   const [vidoesData, setVideosData] = useState({});
+  const [courseVideos, setCourseVideos] = useState({});
   const [quizView, setQuizView] = useState(false);
   const { get, post, setBearerToken } = useAxios()
   const { token } = useSelector(state => state.authReducer)
   const location = useLocation();
   const queryClient = useQueryClient()
+  
   const { id } = location.state || {};
 
   const fetchData = async () => {
@@ -60,15 +62,17 @@ function Videos() {
       refetchOnReconnect: false
     }
   )
-  console.log(vidoesData, "id")
+
   let content = undefined;
   useEffect(() => {
     setIsLoading(false);
-  }, [isLoading]);
+    setCourseVideos(vidoesData)
+  }, [isLoading,vidoesData]);
 
   const handleEnrollment = async () => {
     setBearerToken(token)
     const result = await post(`/enroll/${id}/video/${vidoesData?._id}`, {})
+   
     return result.data
   }
   const enrollmentMutation = useMutation(
@@ -102,8 +106,13 @@ function Videos() {
           <div>
             <h3>Videos Title</h3>
           </div>
-          {courseData?.videosWithCompletionStatus.map((e, i) => <div onClick={() => { setVideosData(e); setQuizView(false);  }} key={i} style={{ display: 'flex', flexDirection: "column", }} >
-            <div style={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingBlockStart: "10px" ,fontWeight:e._id==vidoesData?._id?'bolder':''}}>
+          {courseData?.videosWithCompletionStatus.map((e, i) => <div onClick={() => { 
+            if(e.isNextUnlocked)
+            {
+              setVideosData(e)
+              setQuizView(false); 
+            }  }} key={i} style={{ display: 'flex', flexDirection: "column", }} >
+            <div style={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", cursor:"pointer", alignItems: "center", paddingBlockStart: "10px", fontWeight:e._id==vidoesData?._id?'bolder':''}}>
               <p>{e.title} </p>
 
 
@@ -120,7 +129,7 @@ function Videos() {
             if (courseData?.enroldata?.quizTaken) {
               setQuizView(true)
             }
-          }} style={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingBlockStart: "10px" }}>
+          }} style={{ display: 'flex', flexDirection: "row",cursor:"pointer", justifyContent: "space-between", alignItems: "center", paddingBlockStart: "10px" }}>
             <p>Final Test</p>
             {(courseData?.enroldata?.quizTaken && courseData?.enroldata?.quizPoints > 0) ? <p style={{ color: "green" }}> <i className="fa-solid fa-circle-check"></i></p> : courseData?.enroldata?.quizTaken ? <i class="fa-regular fa-circle"></i> : <p> <i className="fa-solid fa-lock"></i></p>}
           </div>
@@ -134,11 +143,11 @@ function Videos() {
             </div>
             : <>
               <div style={{ marginTop: "20px", marginLeft: "20px" }}>
-                <Player videoLink={vidoesData?.videoLink} handleComplete={handleComplete} />
+                <Player videoLink={courseVideos?.videoLink} handleComplete={handleComplete} />
               </div>
               <h1 style={{ paddingInlineStart: "20px" }}>Description</h1>
               {/* <h5 style={{paddingInlineStart:"20px"}}>{vidoesData?.title}</h5> */}
-              <p style={{ paddingInlineStart: "20px" }}>{vidoesData?.description}</p>
+              <p style={{ paddingInlineStart: "20px" }}>{courseVideos?.description}</p>
               {/* <div   style={{display:"flex", flexDirection:"row",justifyContent:"end"}}>
   <p onClick={()=>{enrollmentMutation.mutate();}} className="bisylms-btn">        {enrollmentMutation.isLoading ? <CircularProgress  size={18} color="inherit" /> : "Complete Video"} </p></div> */}
             </>}

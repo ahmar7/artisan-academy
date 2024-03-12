@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState,useEffect } from 'react';
 
 const Player = ({ videoLink ,handleComplete}) => {
   const videoRef = useRef(null);
@@ -14,7 +14,11 @@ const Player = ({ videoLink ,handleComplete}) => {
  handleComplete()
     // Add your function call here
   };
-
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+    }
+  }, [videoLink]);
   return (
     <div className="video-container">
       <div className="aspect-ratio-container">

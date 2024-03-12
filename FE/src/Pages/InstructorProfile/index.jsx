@@ -250,7 +250,7 @@ console.log(completeCourse)
                               </tr>
                             </thead>
                             <tbody>
-                              {progressCourse.map((data) => (
+                              {progressCourse?.map((data) => (
                                 <tr key={data.id}>
                                   <td className="course">
                                    {data.courseTitle}

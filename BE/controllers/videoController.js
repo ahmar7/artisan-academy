@@ -32,7 +32,7 @@ const multer = require('multer');
    const createdDocument = await VideoModel.create({
     videoLink: myCloud.secure_url,
     title: title,
-    description: 'Video description', 
+    description: description, 
 });
 
     const update = await courseModel.findByIdAndUpdate(courseId, {
