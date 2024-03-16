@@ -137,9 +137,9 @@ function Header({ className, logo, joinBtn, search }) {
 
               {/*  User Btn  */}
               {joinBtn && !token && (
-                <a href="/login" className="user-btn">
+                <Link to-="/login" className="user-btn">
                   <i className="ti-user"></i>
-                </a>
+                </Link>
               )}
               {/*  User Btn  */}
 
