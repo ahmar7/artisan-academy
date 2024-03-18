@@ -44,13 +44,13 @@ useEffect(() => {
               {/* logo End */}
 
               {/* Moblie Btn Start  */}
-           {windowPosition> 0 &&   <button
+              <button
                 className="navbar-toggler"
                 type="button"
                 onClick={() => setActiveMobileMenu(!activeMobileMenu)}
               >
                 <i className="fal fa-bars"></i>
-              </button>}
+              </button> 
               {/*  Moblie Btn End  */}
 
               {/* Nav Menu Start  */}
