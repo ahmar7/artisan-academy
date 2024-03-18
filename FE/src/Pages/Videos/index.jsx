@@ -143,7 +143,7 @@ function Videos() {
             </div>
             : <>
               <div style={{ marginTop: "20px", marginLeft: "20px" }}>
-                <Player videoLink={courseVideos?.videoLink} handleComplete={handleComplete} />
+                <Player videoLink={courseVideos?.videoLink} permission={courseVideos?.completed} handleComplete={handleComplete} />
               </div>
               <h1 style={{ paddingInlineStart: "20px" }}>Description</h1>
               {/* <h5 style={{paddingInlineStart:"20px"}}>{vidoesData?.title}</h5> */}
