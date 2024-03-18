@@ -81,7 +81,7 @@ useEffect(() => {
                       )
                     }
                   >
-                    <Link    style={{ color:windowPosition > 0 && activeMobileMenu && "#2c234d" }} to="/team">The Team</Link>
+                    <Link    style={{ color:windowPosition > 0 && activeMobileMenu && "#2c234d" }} to="">The Team</Link>
 
 
                   </li>
@@ -100,7 +100,7 @@ useEffect(() => {
                       );
                     }}
                   >
-                    <Link style={{ color:windowPosition > 0 && activeMobileMenu && "#2c234d" }}  to="/our-products">Our Products</Link>
+                    <Link style={{ color:windowPosition > 0 && activeMobileMenu && "#2c234d" }}  to="">Our Products</Link>
 
 
                   </li>
