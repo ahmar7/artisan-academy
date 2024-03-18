@@ -59,7 +59,7 @@ const {userData} = useSelector(state=>state.authReducer)
           aria-haspopup="true"
           onClick={handleToggle}
         >
-        <img src={userData?.profile} style={{ width: "60px", borderRadius: "50%" }} alt="user" />
+        <img src={userData?.profile} style={{ width: "40px",marginLeft:"10px", borderRadius: "50%" }} alt="user" />
         </Button>
         <Popper
           open={open}

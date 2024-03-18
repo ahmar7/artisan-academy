@@ -1,10 +1,11 @@
 import ProtoTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useWindowPosition from "../../Hooks/useWindowPosition";
 import Logout from "../Login/Logout";
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { colors } from "@mui/material";
 function Header({ className, logo, joinBtn, search }) {
   const [activeMobileMenu, setActiveMobileMenu] = useState(false);
   const {token} = useSelector(state => state.authReducer)
@@ -13,11 +14,16 @@ function Header({ className, logo, joinBtn, search }) {
   const location = useLocation();
   const currentPath = location.pathname;
 
-
+useEffect(() => { 
+  if(windowPosition == 0 )
+  setActiveMobileMenu(false)
+}
+, [windowPosition])
   return (
     <header
-      className={`${className ? className : "header-01"} sticky ${windowPosition > 0 && "fix-header animated fadeInDown"
-        } `}
+   
+      className={`${className ? className : "header-01"} sticky ${windowPosition > 0 && "fix-header  animated fadeInDown"
+        }  `}
     >
       <div className="container">
         <div className="row">
@@ -38,13 +44,13 @@ function Header({ className, logo, joinBtn, search }) {
               {/* logo End */}
 
               {/* Moblie Btn Start  */}
-              <button
+           {windowPosition> 0 &&   <button
                 className="navbar-toggler"
                 type="button"
                 onClick={() => setActiveMobileMenu(!activeMobileMenu)}
               >
                 <i className="fal fa-bars"></i>
-              </button>
+              </button>}
               {/*  Moblie Btn End  */}
 
               {/* Nav Menu Start  */}
@@ -54,6 +60,7 @@ function Header({ className, logo, joinBtn, search }) {
               >
                 <ul className="navbar-nav">
                   <li
+                  style={{color:"#2c234d"}}
                     className="menu-item-has-children"
                     onClick={() =>
                       setActiveSubMobileMenu(
@@ -61,19 +68,20 @@ function Header({ className, logo, joinBtn, search }) {
                       )
                     }
                   >
-                    <Link to="/">Home</Link>
+                    <Link style={{ color:windowPosition > 0 && activeMobileMenu && "#2c234d" }}  to="/">Home</Link>
 
 
                   </li>
                   <li
                     className="menu-item-has-children"
+                 
                     onClick={() =>
                       setActiveSubMobileMenu(
                         activeMobileSubMenu === "course" ? false : "course"
                       )
                     }
                   >
-                    <Link to="/team">The Team</Link>
+                    <Link    style={{ color:windowPosition > 0 && activeMobileMenu && "#2c234d" }} to="/team">The Team</Link>
 
 
                   </li>
@@ -92,7 +100,7 @@ function Header({ className, logo, joinBtn, search }) {
                       );
                     }}
                   >
-                    <Link to="/our-products">Our Products</Link>
+                    <Link style={{ color:windowPosition > 0 && activeMobileMenu && "#2c234d" }}  to="/our-products">Our Products</Link>
 
 
                   </li>
@@ -129,7 +137,7 @@ function Header({ className, logo, joinBtn, search }) {
                     </ul>
                   </li> */}
                   <li>
-                    <Link to="/contact">Contact</Link>
+                    <Link style={{ color:windowPosition > 0 && activeMobileMenu && "#2c234d" }}  to="/contact">Contact</Link>
                   </li>
                 </ul>
               </div>
@@ -137,7 +145,7 @@ function Header({ className, logo, joinBtn, search }) {
 
               {/*  User Btn  */}
               {joinBtn && !token && (
-                <Link to-="/login" className="user-btn">
+                <Link to="/login" className="user-btn">
                   <i className="ti-user"></i>
                 </Link>
               )}

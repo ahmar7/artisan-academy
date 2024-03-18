@@ -37,7 +37,7 @@ function HomeHero({ scrollToComponent }) {
                 {/* Your content goes here */}
               </div>
 
-              <h2>Craftmanship in every risk</h2>
+              <h2 style={{color:"#2c234d"}}>Craftmanship in every risk</h2>
               {/* <p>
                 Loo you mug lurgy baking cakes boot cracking goal morish up the
                 duff haggle hotpot faff about no biggie burke, is bleeder
