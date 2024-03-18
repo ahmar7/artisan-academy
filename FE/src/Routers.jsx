@@ -25,6 +25,7 @@ import createStore from "react-auth-kit/createStore";
 import Videos from "./Pages/Videos";
 import PrivateRoute from "./PrivateRoute";
 import { useSelector } from 'react-redux';
+import EmailVerify from "./Pages/EmailVerify/EmailVerify";
 const store = createStore({
   authName: "_auth",
   authType: "cookie",
@@ -62,6 +63,7 @@ export default function RouterData() {
           <Route path="/blog" element={<Blogs />} />
           <Route path="/single-post" element={<SinglePost />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/:id/verify/:token" element={<EmailVerify />} />
           <Route path="*" element={<Error />} />
 
          

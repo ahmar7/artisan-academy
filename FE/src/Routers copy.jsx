@@ -21,6 +21,7 @@ import Blogs from "./Pages/Blogs";
 import SinglePost from "./Pages/SinglePost";
 import Contact from "./Pages/Contact";
 import GotoTop from "./Component/GotoTop";
+import EmailVerify from "./Pages/EmailVerify/EmailVerify";
 ;
 export default function RouterData() {
   return (
@@ -44,6 +45,7 @@ export default function RouterData() {
           <Route path="/blog" element={<Blogs />} />
           <Route path="/single-post" element={<SinglePost />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/verify" element={<EmailVerify />} />
           <Route path="*" element={<Error />} />
 
         </Routes>
