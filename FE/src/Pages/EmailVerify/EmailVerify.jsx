@@ -1,3 +1,5 @@
+import loading from '../../asset/loading.gif';
+import success from '../../asset/success.png';
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 // import success from "../assets/img/success.png";
@@ -11,8 +13,8 @@ const EmailVerify = () => {
   const [validUrl, setValidUrl] = useState(false);
   const [header, setHeader] = useState(false);
   const param = useParams();
- console.log(param)
-  const { get,  } = useAxios()
+  console.log(param)
+  const { get, } = useAxios()
   const fetchData = async () => {
     let endpoint = `/${param.id}/verify/${param.token}`
     const response = await get(endpoint)
@@ -20,8 +22,8 @@ const EmailVerify = () => {
     return response?.data
   }
 
-  const { data: courseData,isLoading } = useQuery(
-    ['verify',param],
+  const { data: courseData, isLoading } = useQuery(
+    ['verify', param],
     fetchData,
     {
       refetchOnWindowFocus: false,
@@ -31,33 +33,33 @@ const EmailVerify = () => {
 
   return (
     <>
-       
-       <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      textAlign: 'center', // Center the text
-      backgroundColor: '#fbfbfb'
-      // Optional: background color for the whole screen
-    }}>
-        {isLoading?<img src={'assets/images/loading.gif'} alt="Loader"  />:
-        <>
-   <img src={'assets/images/success.jpeg'} alt="Success" style={{ maxWidth: '300px', marginBottom: '20px' }} />
-      <h1>Email verified successfully</h1>
-      <Link to="/login" style={{ textDecoration: 'none' }}>
-        <button style={{
-          padding: '10px 20px',
-          backgroundColor: '#4CAF50', // Button color
-          color: 'white', // Text color
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}>Login</button>
-      </Link>
-      </>}
-    </div>
+
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        textAlign: 'center', // Center the text
+        backgroundColor: '#fbfbfb'
+        // Optional: background color for the whole screen
+      }}>
+        {isLoading ? <img src={loading} alt="Loader" /> :
+          <>
+            <img src={success} alt="Success" style={{ maxWidth: '300px', marginBottom: '20px' }} />
+            <h1>Email verified successfully</h1>
+            <a href="/login" style={{ textDecoration: 'none' }}>
+              <button style={{
+                padding: '10px 20px',
+                backgroundColor: '#4CAF50', // Button color
+                color: 'white', // Text color
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+              }}>Login</button>
+            </a>
+          </>}
+      </div>
       {/* {validUrl ? (
        
       ) : (

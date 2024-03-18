@@ -63,7 +63,7 @@ export default function RouterData() {
           <Route path="/blog" element={<Blogs />} />
           <Route path="/single-post" element={<SinglePost />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/:id/verify/:token" element={<EmailVerify />} />
+          <Route path="/users/:id/verify/:token" element={<EmailVerify />} />
           <Route path="*" element={<Error />} />
 
          
