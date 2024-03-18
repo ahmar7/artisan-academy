@@ -13,7 +13,7 @@ app.use(cookieParser());
 
 const cron = require("node-cron");
 let ALLOWED_ORIGINS = [
-  "https://admin-eight-lemon.vercel.app",
+  "https://fe-two-opal.vercel.app",
   "https://www.artisanuw.com.au",
   "https://artisanuw.com.au",
   "https://artisan-academy.vercel.app",
