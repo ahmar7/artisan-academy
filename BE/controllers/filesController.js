@@ -8,7 +8,6 @@ const FilesModel = require("../models/filesModel"); // Update the path according
 
 exports.uploadFiles = catchAsyncErrors(async (req, res, next) => {
   const files = req.files;
-  console.log("req.files: ", files);
 
   // Map each file to create a new document for each
   const uploadPromises = files.map(async (file) => {
@@ -18,7 +17,7 @@ exports.uploadFiles = catchAsyncErrors(async (req, res, next) => {
     const fileType = file.mimetype.split("/")[1];
 
     const myCloud = await cloudinary.uploader.upload(fileUri.content, {
-      resource_type: fileType === "image" ? "image" : "raw", 
+      resource_type: fileType === "image" ? "image" : "raw",
     });
 
     const newDocument = await FilesModel.create({
@@ -54,7 +53,6 @@ exports.getAllData = catchAsyncErrors(async (req, res, next) => {
 });
 exports.deleteSingleFile = catchAsyncErrors(async (req, res, next) => {
   const fileIdToDelete = req.params._id;
-  console.log("fileIdToDelete: ", fileIdToDelete);
 
   // Delete the document based on the inner array's ID
   const result = await FilesModel.findByIdAndDelete({

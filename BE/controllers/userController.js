@@ -64,7 +64,6 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     services,
     // role,
   } = req.body;
-  console.log("req.body: ", req.body);
   // if (
   //   !name ||
   //   !company ||
@@ -147,7 +146,6 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
     return next(new errorHandler("Please enter email and password", 400));
   }
   let UserAuth = await UserModel.findOne({ email });
-  console.log("UserAuth: ", UserAuth);
 
   if (!UserAuth) {
     return next(
