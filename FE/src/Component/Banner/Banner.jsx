@@ -12,7 +12,7 @@ function Banner({ title, background }) {
           <div className="col-lg-12">
             <h2 className="banner-title">{title}</h2>
             <div className="bread-crumbs">
-              <Link to="/">Home</Link> <span></span> {title}
+              <Link to="/academy">Home</Link> <span></span> {title}
             </div>
           </div>
         </div>

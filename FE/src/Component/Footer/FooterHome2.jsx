@@ -34,7 +34,7 @@ function FooterHome2() {
           <div className="col-lg-4 col-md-3">
             <aside className="widget">
               <div className="about-widget">
-                <Link to="/">
+                <Link to="/academy">
                   <img src="assets/images/logo2.png" alt="" />
                 </Link>
                 <p>

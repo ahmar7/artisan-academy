@@ -29,7 +29,7 @@ export default function RouterData() {
       <BrowserRouter>
         <GotoTop />
         <Routes>
-          <Route index path="/" element={<Home />} />
+          <Route index path="/academy" element={<Home />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/login" element={<SignForm />} />
           <Route path="/home-2" element={<Home2 />} />

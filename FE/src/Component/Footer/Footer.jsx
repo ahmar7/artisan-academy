@@ -22,7 +22,7 @@ function Footer({ getStart }) {
           <div className="col-lg-4 col-md-3">
             <aside className="widget">
               <div className="about-widget">
-                <Link to="/">
+                <Link to="/academy">
                   <img src="assets/images/logo.png" alt="" />
                 </Link>
                 <p>
