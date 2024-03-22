@@ -133,7 +133,7 @@ const LoginWithGoogle=async (data)=>{
 
   if (loginResponse) {
     dispatch(setUserDetails({token:loginResponse?.token,userData:loginResponse?.user}))
-    navigate("/");
+    navigate("/academy");
     toast.success("Login successfully")
   } else {
     

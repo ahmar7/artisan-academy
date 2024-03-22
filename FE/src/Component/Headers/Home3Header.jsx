@@ -24,7 +24,7 @@ function Home3Header() {
           <div className="col-lg-12">
             <nav className="navbar navbar-expand-lg">
               {/* logo Start */}
-              <Link className="navbar-brand" to="/">
+              <Link className="navbar-brand" to="/academy">
                 <img src="assets/images/logo3.png" alt="" />
               </Link>
               {/* logo End */}
@@ -141,7 +141,7 @@ function Home3Header() {
                       }}
                     >
                       <li>
-                        <Link to="/">Home One</Link>
+                        <Link to="/academy">Home One</Link>
                       </li>
                       <li>
                         <Link to="/home-2">Home Two</Link>

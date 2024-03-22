@@ -30,7 +30,7 @@ useEffect(() => {
           <div className="col-lg-12">
             <nav className="navbar navbar-expand-lg">
               {/* logo Start */}
-              <Link className="navbar-brand" to="/">
+              <Link className="navbar-brand" to="/academy">
                 {(currentPath=="/" || currentPath=="/login" || currentPath=="/register" )?  <img
                   src="assets/images/logo.png" alt="" />:  <img
                   src="assets/images/logoBlue.png" /> }

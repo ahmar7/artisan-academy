@@ -101,8 +101,8 @@ function Videos() {
       <Header logo="assets/images/logo4.png" joinBtn={true} />
       <BlogBanner course={courseData?.course} />
 
-      <div style={{ display: "flex", flexDirection: "row", width: "100%", paddingTop: '60px' }}>
-        <div style={{ width: '20%', margin: '10px', paddingInline: "20px" }} >
+      <div className="maina" style={{ display: "flex", flexDirection: "row", width: "100%", paddingTop: '60px' }}>
+        <div className="title-ra" style={{ width: '20%', margin: '10px', paddingInline: "20px" }} >
           <div>
             <h3>Videos Title</h3>
           </div>
@@ -136,7 +136,7 @@ function Videos() {
           <div style={{ borderBlockEnd: "1px solid", marginInline: "10px" }} />
         </div >
 
-        <div style={{ width: "60%" }}>
+        <div className="mais" style={{ width: "60%" }}>
           {quizView ?
             <div style={{ marginTop: "20px", marginLeft: "20px" }}>
               <QuizForm quizData={courseData?.course?.quizzes} id={id} />
@@ -145,7 +145,7 @@ function Videos() {
               <div style={{ marginTop: "20px", marginLeft: "20px" }}>
                 <Player videoLink={courseVideos?.videoLink} permission={courseVideos?.completed} handleComplete={handleComplete} />
               </div>
-              <h1 style={{ paddingInlineStart: "20px" }}>Description</h1>
+              <h1 className="adka" style={{ paddingInlineStart: "20px" }}>Description</h1>
               {/* <h5 style={{paddingInlineStart:"20px"}}>{vidoesData?.title}</h5> */}
               <p style={{ paddingInlineStart: "20px" }}>{courseVideos?.description}</p>
               {/* <div   style={{display:"flex", flexDirection:"row",justifyContent:"end"}}>
