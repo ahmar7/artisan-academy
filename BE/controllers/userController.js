@@ -10,6 +10,11 @@ const jwtToken = require("../utils/jwtToken");
 const crypto = require("crypto");
 const Token = require("../models/token");
 const sendEmail = require("../utils/sendEmail");
+function generateResetToken() {
+  const buffer = crypto.randomBytes(32);
+  const token = buffer.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return token;
+}
 exports.LoginWithGoogle = catchAsyncErrors(async (req, res, next) => {
   const { email, first_name, last_name, profile } = req.body;
 
@@ -476,4 +481,136 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     // token,
     user,
   });
+});
+
+
+
+exports.adminResetPassword = catchAsyncErrors(async (req, res, next) => {
+  const { email } = req.body;
+  const admin = await UserModel.findOne({ email });
+
+  if (!admin) {
+    return res.status(404).send('Admin not found');
+  }
+
+  const resetToken = generateResetToken();
+  admin.resetPasswordToken = resetToken;
+  admin.resetPasswordExpires = Date.now() + 3600000; // 1 hour from now
+  await admin.save();
+
+  const url = `${process.env.BASE_URL}/forget-password/${resetToken}`;
+  const subject = `Reset Password Verification`;
+  const text = `To reset your password, please click the following link: 
+  
+${url}
+
+The link will expire after 1 hour.`;
+
+  await sendEmail(admin.email, subject, text);
+
+  return res.json({
+    message: 'Successfully sent link',
+    link: url
+  });
+});
+
+
+
+
+exports.adminResetNewPassword = catchAsyncErrors(async (req, res, next) => {
+  const { resetToken } = req.params;
+  const { newPassword } = req.body;
+
+  if (!newPassword || newPassword.length < 8) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+  }
+
+  try {
+    // Hash the token to compare with the hashed token stored in the database
+    
+    console.log(resetToken)
+    // Find the admin by the reset token and ensure the token hasn't expired
+    const admin = await UserModel.findOne({
+      resetPasswordToken: resetToken,
+
+    });
+
+    if (!admin) {
+      return res.status(400).json({ message: 'Invalid or expired password reset token.' });
+    }
+
+   
+    admin.password = await newPassword;
+    // Clear the password reset token fields
+    admin.resetPasswordToken = undefined;
+    admin.resetPasswordExpire = undefined;
+    await admin.save();
+    res.status(200).json({ message: 'Password has been successfully reset. Please log in with your new password.' });
+  } catch (error) {
+    console.error('Password reset error:', error);
+    res.status(500).json({ message: 'An error occurred while resetting the password.' });
+  }
+});
+
+
+
+exports.adminProfileUpdate = catchAsyncErrors(async (req, res, next) => {
+  try {
+    const userId = req.user._id; // Assuming req.user contains the authenticated user's data
+
+    const { name, email, company, services } = req.body;
+    // Validate input data as needed
+
+    // Update the user in the database
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { $set: { name, email, company, services } },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        message: 'User not found',
+      });
+    }
+
+    // Respond with the updated user information
+    // Exclude sensitive fields as necessary
+    const { password, ...userWithoutPassword } = updatedUser.toObject();
+    res.status(200).json({
+      message: 'Profile updated successfully',
+      user: userWithoutPassword,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+exports.AdminChangePassowrd = catchAsyncErrors(async (req, res, next) => {
+  try {
+    const userId = req.user._id; 
+    const password = req.user.passwo;// Assuming req.user contains the authenticated user's data
+
+    const { currentPassword, NewPassword } = req.body;
+   if(!currentPassword || !NewPassword){
+      return res.status(400).json({ message: 'Please provide both current and new password' });
+    }
+  if(password !== currentPassword){
+    return res.status(400).json({ message: 'Current password is incorrect' });
+  }
+    const updatedUser = await UserModel.findByIdAndUpdate(userId, { password: NewPassword }, { new: true });
+
+
+
+    res.status(200).json({
+      message: 'successful password change',
+   
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });

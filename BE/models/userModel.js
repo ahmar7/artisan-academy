@@ -99,6 +99,8 @@ profile:{
     type: Boolean,
     default: false,
   },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
 
   createdAt: {
     type: Date,
