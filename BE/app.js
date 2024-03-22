@@ -5,7 +5,7 @@ const bodyparser = require("body-parser");
 // Environment file set
 const dotnet = require("dotenv");
 dotnet.config({ path: "./config/config.env" });
-const cors = require("cors");
+
 app.use(express.json({ limit: "8mb" }));
 let cookieParser = require("cookie-parser");
 app.use(cookieParser());
