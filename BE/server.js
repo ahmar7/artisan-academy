@@ -1,5 +1,5 @@
 const app = require("./app");
-const cors = require("cors");
+// const cors = require("cors");
 var bodyParser = require("body-parser");
 const { errorMiddleware } = require("./middlewares/errorMiddleware");
 
@@ -8,7 +8,7 @@ const authMiddleware = require("./middlewares/authMiddleware");
 
 const dotnet = require("dotenv");
 dotnet.config({ path: "./.env" });
-app.use(cors());
+// app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 const database = require("./config/database");
