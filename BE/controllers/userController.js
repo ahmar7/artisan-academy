@@ -89,7 +89,7 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     );
   }
   email.toLowerCase();
-
+ const profile='https://res.cloudinary.com/dzkk7ubqq/raw/upload/v1711138293/cxkd7rd3jzdv4ljjaftg.png'
   let createUser = await UserModel.create({
     name,
     email,
@@ -98,6 +98,7 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     company,
     title,
     services,
+    profile,
     role: "user",
   });
   const token = await new Token({
@@ -592,7 +593,7 @@ exports.adminProfileUpdate = catchAsyncErrors(async (req, res, next) => {
 exports.AdminChangePassowrd = catchAsyncErrors(async (req, res, next) => {
   try {
     const userId = req.user._id; 
-    const password = req.user.passwo;// Assuming req.user contains the authenticated user's data
+    const password = req.user.password;// Assuming req.user contains the authenticated user's data
 
     const { currentPassword, NewPassword } = req.body;
    if(!currentPassword || !NewPassword){

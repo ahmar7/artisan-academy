@@ -2,9 +2,9 @@ import axios from "axios";
 
 export const useAxios = () => {
   const instance = axios.create({
-    baseURL: "https://artisian-academy-server.onrender.com/api/v1",
+    baseURL: "http://localhost:4000/api/v1",
   });
-
+  // baseURL: "https://artisian-academy-server.onrender.com/api/v1",
   instance.interceptors.response.use(
     (response) => response,
     (error) => {

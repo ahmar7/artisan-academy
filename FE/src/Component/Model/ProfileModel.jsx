@@ -11,6 +11,10 @@ import { useSelector,useDispatch } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useQueryClient } from 'react-query';
 import { setProfile } from '../../store/reducers/auth';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { toast } from 'react-toastify';
+
 const style = {
   position: 'absolute' ,
   top: '50%',
@@ -22,14 +26,31 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-
+const initialValues = {
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: '',
+};
+const validationSchema = Yup.object({
+  currentPassword: Yup.string()
+    .min(8, 'Password is too short - should be 6 chars minimum.')
+    .required('Current password is required'),
+  newPassword: Yup.string()
+    .min(8, 'Password is too short - should be 6 chars minimum.')
+    .notOneOf([Yup.ref('currentPassword'), null], 'New password must be different from the current password')
+    .required('New password is required'),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
+    .required('Confirming new password is required'),
+});
 export default function ProfileModel({allprofile}) {
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [fileName, setFileName] = React.useState('')
+  const [type, setType] = React.useState("Avatar");
   const [file, setFile] = React.useState()
   const [profileLink,setProfileLink]=React.useState("")
-  const {  put} = useAxios()
+  const {  put,post,setBearerToken} = useAxios()
   const queryClient = useQueryClient()
   const {userData,token}=useSelector(state=>state.authReducer)
   const handleOpen = () => setOpen(true);
@@ -66,7 +87,27 @@ export default function ProfileModel({allprofile}) {
     }
   };
   
+  const handleSubmit = (values, { setSubmitting }) => {
 
+    setBearerToken(token); 
+  
+    post("/admin/changePassword", values)
+      .then(response => {
+      toast.success("Password changed successfully")
+      handleClose()
+      })
+      .catch(error => {
+        // Handle error
+        console.error("Error changing password:", error.response.data.message);
+       toast.error(error.response.data.message || "Something went wrong, please try again")
+       handleClose()
+      })
+      .finally(() => {
+        handleClose()
+        setSubmitting(false); // This ensures that setSubmitting is called regardless of the outcome
+      });
+  };
+  
   return (
     <div>
       <Button  style={{width:"100%" ,backgroundColor:"#5838fc",color:"white",border:"none",marginBottom:"20px",paddingBlock:"5px",cursor:"pointer" ,}} onClick={handleOpen}>Edit Profile</Button>
@@ -78,8 +119,12 @@ export default function ProfileModel({allprofile}) {
       >
         <Box sx={style}>
         <>
-        <h4 style={{display:"flex",justifyContent:"center",fontWeight:"bolder"}}>Change Profile</h4>
-        <label htmlFor="image" style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+     
+        <div style={{display:"flex",gap:"4px"}}>
+        {["Avatar","Password"].map((v)=><p onClick={()=>setType(v)} style={{border:"2px solid",padding:"2px",paddingInline:"6px",borderRadius:"4px",borderColor:type==v?"blue":"",color:type==v?"blue":"",cursor:"pointer"}}>{v}</p>)}
+        </div>
+        <h4 style={{display:"flex",justifyContent:"center",fontWeight:"bolder"}}>Change {type}</h4>
+        {/* <label htmlFor="image" style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
   <input
     type="file"
     id="image"
@@ -100,8 +145,8 @@ export default function ProfileModel({allprofile}) {
   <p style={{ marginLeft: "2px", fontSize: "0.875rem", fontWeight: "bold",paddingTop:"10px" }}>
     {fileName ? fileName : 'Add File'}
   </p>
-</label>
-
+</label> */}
+{type==="Avatar" && <>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "5px" }}>
         {allprofile?.map((data, index) => {
   return (
@@ -120,6 +165,38 @@ export default function ProfileModel({allprofile}) {
     updateProfile();
     
   }}  style={{backgroundColor:"#5838fc",color:"white",border:"none",marginTop:"20px",paddingBlock:"5px",cursor:"pointer" ,display:"flex",flexDirection:"row",justifyContent:"center",alignItems:"center"}} >  {isLoading ? <CircularProgress  size={18} color="inherit" /> : "Update Profile"} </div>
+  </>}
+{type==="Password" && <>
+<Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting }) => (
+        <Form>
+          <div style={{display:"flex",flexDirection:"column"}}>
+          <label htmlFor="currentPassword">Current Password</label>
+          <Field type="password" name="currentPassword" />
+          <ErrorMessage name="currentPassword" style={{color:"red"}} component="div" />
+          </div>
+          <div style={{display:"flex",flexDirection:"column"}}>
+          <label htmlFor="newPassword" style={{marginTop:"6px"}}>New Password</label>
+          <Field type="password" name="newPassword" />
+          <ErrorMessage name="newPassword" style={{color:"red"}} component="div" />
+          </div>
+<div style={{display:"flex",flexDirection:"column"}}>
+          <label htmlFor="confirmPassword" style={{marginTop:"6px"}}>Confirm New Password</label>
+          <Field type="password" name="confirmPassword" />
+          <ErrorMessage name="confirmPassword" style={{color:"red"}} component="div" />
+          </div>
+          <div style={{display:"flex",flexDirection:"row",justifyContent:"center",alignItems:"center",width:"full"}}>
+          <button type="submit" style={{backgroundColor:"#5838fc",color:"white",border:"none",marginTop:"20px",paddingBlock:"5px",cursor:"pointer" ,}} disabled={isSubmitting}>
+            Change Password
+          </button>
+          </div>
+        </Form>
+      )}
+    </Formik></>}
    </>
         </Box>
       </Modal>

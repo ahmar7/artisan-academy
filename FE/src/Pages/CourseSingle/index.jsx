@@ -19,6 +19,7 @@ import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import { useMutation } from 'react-query';
+import { toast } from "react-toastify";
 function CourseSingle() {
   // const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState("Overview");
@@ -79,7 +80,9 @@ const { data: courseData, isLoading } = useQuery(
       },
       onError: (error) => {
          
-        alert(error);
+     
+      
+       toast.error(error.response.data.error || "Something went wrong, please try again")
       },
     }
   );

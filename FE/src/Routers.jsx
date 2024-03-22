@@ -26,6 +26,8 @@ import Videos from "./Pages/Videos";
 import PrivateRoute from "./PrivateRoute";
 import { useSelector } from 'react-redux';
 import EmailVerify from "./Pages/EmailVerify/EmailVerify";
+import ForgotPassword from "./Component/Login/ForgotPassword";
+import ChangePassword from "./Component/Login/ChangePassword";
 const store = createStore({
   authName: "_auth",
   authType: "cookie",
@@ -52,6 +54,8 @@ export default function RouterData() {
           <Route path="/course-3" element={<Course3 />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/single-course" element={<CourseSingle />} />
+          <Route path="/forget-password" element={<ForgotPassword />} />
+          <Route path="/forget-password/:resetToken" element={<ChangePassword />} />
           <Route path="/about-1" element={<About1 />} />
           <Route path="/about-2" element={<About2 />} />
           <Route path="/instructor" element={<Instructor />} />

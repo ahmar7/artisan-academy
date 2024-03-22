@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { loginApi ,loginwithGoogle} from "../../Api/Service";
+import { loginApi ,loginwithGoogle,forgotApi} from "../../Api/Service";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {useDispatch} from 'react-redux'
@@ -18,7 +18,7 @@ const StyledTextField = styled(TextField)({
   width: '100%',
 });
 
-function Login() {
+function ForgotPassword() {
   let location=useLocation()
   const queryParams = new URLSearchParams(location.search);
   // const signIn = useSignIn();
@@ -46,7 +46,7 @@ function Login() {
   };
 
   const areFieldsEmpty = () => {
-    const requiredFields = ["email", "password"];
+    const requiredFields = ["email"];
     return requiredFields.some(field => !userData[field]);
   };
 
@@ -70,7 +70,7 @@ function Login() {
     setisCall(true);
     try {
       // Check if all fields are filled
-      const requiredFields = ["email", "password"];
+      const requiredFields = ["email"];
       const newErrors = {};
       for (const field of requiredFields) {
         if (!userData[field]) {
@@ -89,27 +89,19 @@ function Login() {
         password: userData.password,
       };
 
-      const loginResponse = await loginApi(data);
+      const loginResponse = await forgotApi(data);
       console.log('loginResponse: ', loginResponse);
 
-      if (loginResponse.success
-      //   && signIn({
-      //   token: loginResponse.token.token,
-      //   expiresIn: 4317,
-      //   tokenType: "Bearer",
-      //   authState: newData,
-      //   sameSite: loginResponse,
-      // })
-      ) {
-        dispatch(setUserDetails({token:loginResponse?.token,userData:loginResponse?.user}))
-        navigate("/academy");
+      if (loginResponse.success) {
+    
+        navigate("/login");
       } else {
         setapiError(loginResponse.msg || "Something went wrong, please try again")
-        // setErrors({ ...errors, password: "Invalid email or password" });
+   
         
       }
     } catch (error) {
-      // Handle login error
+    
       setapiError(error?.data?.msg || "Something went wrong, please try again")
       
     } finally {
@@ -119,28 +111,8 @@ function Login() {
     }
   };
 
-  // useEffect(() => {
-  //   if (isAuthenticated() && authUser().user.role === "user") {
-  //     navigate("/dashboard");
+ 
 
-  //     return;
-  //   } else if (isAuthenticated() && authUser().user.role === "admin") {
-  //     navigate("/admin/dashboard");
-  //   }
-  // }, []);
-const LoginWithGoogle=async (data)=>{
-  const loginResponse = await loginwithGoogle(data);
-
-  if (loginResponse) {
-    dispatch(setUserDetails({token:loginResponse?.token,userData:loginResponse?.user}))
-    navigate("/academy");
-    toast.success("Login successfully")
-  } else {
-    
-  toast.error("Something went wrong, please try again")
-    
-  }
-}
   return (
     <section className="register-section" style={{ backgroundImage: "url(assets/images/own/bg-main.jpg)", backgroundSize: "cover", backgroundPosition: "center" }}>
        {successMessage && (
@@ -165,8 +137,8 @@ const LoginWithGoogle=async (data)=>{
           </div>
           <div className="col-lg-5 col-md-6">
             <div className="registration-form">
-              <h4>Login to Your Account</h4>
-              <p>Access your personalized courses</p>
+              <h4>Send Eamil</h4>
+              <p>verification of change password</p>
               <form onSubmit={handleLogin} method="post">
                 <StyledTextField
                   type="email"
@@ -178,40 +150,14 @@ const LoginWithGoogle=async (data)=>{
                   helperText={errors.email}
                 />
 
-                <div className="in-gp">
-                  <StyledTextField
-                    type={type}
-                    onChange={handleInput}
-                    value={userData.password}
-                    name="password"
-                    label="Password"
-                    error={!!errors.password}
-                    helperText={errors.password}
-                  />
-                  <Button
-                    type="button"
-                    onClick={handleTogglePassword}
-                    className="abs-btna"
-                  >
-                    {type === "password" ? (
-                      <div className="relative flex h-full w-full items-center justify-center" data-tooltip="Hide password">
-                        {/* Your eye icon for hiding password */}
-                      </div>
-                    ) : (
-                      <div className="relative flex h-full w-full items-center justify-center" data-tooltip="Show password">
-                        {/* Your eye-slash icon for showing password */}
-                      </div>
-                    )}
-                  </Button>
-                </div>
-<div onClick={()=> navigate("/forget-password")} style={{display:"flex",justifyContent:"end",color:"blue",marginBottom:"10px",cursor:"pointer",}}>Forgot passsword?</div>
+              
                 <Button
                   onClick={handleLogin}
                   disabled={isloading || areFieldsEmpty()||isCall}
                   type="submit"
                   className='reg-byn'
                 >
-                  {isCall ? <CircularProgress  size={24} color="inherit" /> : "Login"}
+                  {isCall ? <CircularProgress  size={24} color="inherit" /> : "Send Email"}
                 </Button>
                 {apiError && (
                   <div className="alert alert-danger mt-3" role="alert">
@@ -219,38 +165,8 @@ const LoginWithGoogle=async (data)=>{
                   </div>
                 )}
                 
-                <div className="or-divider">
-                  <div className="line"></div>
-                  <div className="or-text">OR</div>
-                  <div className="line"></div>
-                </div>
-{/* 
-                <button onClick={() => login()} type="button" className=" btn-google mt-3">
-                  
-                  <img src='assets/images/own/google.svg' /> Sign in with Google</button> */}
-<div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center", }}>
-  <GoogleLogin
-    onSuccess={credentialResponse => {
-      const decoded = jwtDecode(credentialResponse.credential);
-    if(decoded)
-    {
-      let data = {
-        email: decoded.email,
-        first_name:decoded.given_name,
-        last_name:decoded.family_name,
-        profile:decoded.picture,
-      };
-      LoginWithGoogle(data)
-    }
-    }}
-    onError={() => {
-      toast.error("Something went wrong, please try again")
-    }}
-    size="large"
-  />
-</div>
 
-                <p className='alred'>Don't have an account? <Link to="/register">Register Now</Link></p>
+
               </form>
             </div>
           </div>
@@ -260,5 +176,5 @@ const LoginWithGoogle=async (data)=>{
   );
 }
 
-export default Login;
+export default ForgotPassword;
  

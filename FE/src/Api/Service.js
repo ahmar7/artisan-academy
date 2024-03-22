@@ -13,6 +13,12 @@ export const registerApi = (data) => {
 export const loginApi = (data) => {
   return postApi("login", data);
 };
+export const forgotApi = (data) => {
+  return postApi("admin/forgot-password", data);
+};
+export const chnagePassord = (url,data) => {
+  return postApi(url, data);
+};
 export const loginwithGoogle = (data) => {
   return postApi("loginWithGoogle", data);
 };
