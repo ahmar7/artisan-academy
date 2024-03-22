@@ -102,7 +102,7 @@ function Login() {
       // })
       ) {
         dispatch(setUserDetails({token:loginResponse?.token,userData:loginResponse?.user}))
-        navigate("/");
+        navigate("/academy");
       } else {
         setapiError(loginResponse.msg || "Something went wrong, please try again")
         // setErrors({ ...errors, password: "Invalid email or password" });
