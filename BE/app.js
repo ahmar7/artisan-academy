@@ -12,7 +12,7 @@ app.use(cookieParser());
 //
 
 const cron = require("node-cron");
-let ALLOWED_ORIGINS = [
+const ALLOWED_ORIGINS = [
   "https://underwritingacademy.com.au",
   "https://www.underwritingacademy.com.au",
   "https://artisan-academy.vercel.app",
@@ -20,15 +20,20 @@ let ALLOWED_ORIGINS = [
   "https://artisanuw.com.au",
   "http://localhost:5173",
 ];
+
 app.use((req, res, next) => {
   let origin = req.headers.origin;
-  let theOrigin =
-    ALLOWED_ORIGINS.indexOf(origin) >= 0 ? origin : ALLOWED_ORIGINS[0];
 
-  res.header("Access-Control-Allow-Origin", theOrigin);
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  } else {
+    // If the origin is not allowed, you can set a default origin or handle the error as needed
+    res.header("Access-Control-Allow-Origin", ALLOWED_ORIGINS[0]);
+  }
+
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   res.header("Access-Control-Allow-Credentials", true);
   res.header(
