@@ -12,7 +12,11 @@ const Token = require("../models/token");
 const sendEmail = require("../utils/sendEmail");
 function generateResetToken() {
   const buffer = crypto.randomBytes(32);
-  const token = buffer.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const token = buffer
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
   return token;
 }
 exports.LoginWithGoogle = catchAsyncErrors(async (req, res, next) => {
@@ -89,7 +93,8 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     );
   }
   email.toLowerCase();
- const profile='https://res.cloudinary.com/dzkk7ubqq/raw/upload/v1711138293/cxkd7rd3jzdv4ljjaftg.png'
+  const profile =
+    "https://res.cloudinary.com/dzkk7ubqq/raw/upload/v1711138293/cxkd7rd3jzdv4ljjaftg.png";
   let createUser = await UserModel.create({
     name,
     email,
@@ -484,14 +489,12 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-
-
 exports.adminResetPassword = catchAsyncErrors(async (req, res, next) => {
   const { email } = req.body;
   const admin = await UserModel.findOne({ email });
 
   if (!admin) {
-    return res.status(404).send('Admin not found');
+    return res.status(404).send("Admin not found");
   }
 
   const resetToken = generateResetToken();
@@ -510,50 +513,54 @@ The link will expire after 1 hour.`;
   await sendEmail(admin.email, subject, text);
 
   return res.json({
-    message: 'Successfully sent link',
-    link: url
+    message: "Successfully sent link",
+    link: url,
+    success: true,
   });
 });
-
-
-
 
 exports.adminResetNewPassword = catchAsyncErrors(async (req, res, next) => {
   const { resetToken } = req.params;
   const { newPassword } = req.body;
 
   if (!newPassword || newPassword.length < 8) {
-    return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+    return res
+      .status(400)
+      .json({ message: "Password must be at least 8 characters long." });
   }
 
   try {
     // Hash the token to compare with the hashed token stored in the database
-    
-    console.log(resetToken)
+
+    console.log(resetToken);
     // Find the admin by the reset token and ensure the token hasn't expired
     const admin = await UserModel.findOne({
       resetPasswordToken: resetToken,
-
     });
 
     if (!admin) {
-      return res.status(400).json({ message: 'Invalid or expired password reset token.' });
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired password reset token." });
     }
 
-   
     admin.password = await newPassword;
     // Clear the password reset token fields
     admin.resetPasswordToken = undefined;
     admin.resetPasswordExpire = undefined;
     await admin.save();
-    res.status(200).json({ message: 'Password has been successfully reset. Please log in with your new password.' });
+    res.status(200).json({
+      message:
+        "Password has been successfully reset. Please log in with your new password.",
+      success: true,
+    });
   } catch (error) {
-    console.error('Password reset error:', error);
-    res.status(500).json({ message: 'An error occurred while resetting the password.' });
+    console.error("Password reset error:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while resetting the password." });
   }
 });
-
-
 
 exports.adminProfileUpdate = catchAsyncErrors(async (req, res, next) => {
   try {
@@ -571,7 +578,7 @@ exports.adminProfileUpdate = catchAsyncErrors(async (req, res, next) => {
 
     if (!updatedUser) {
       return res.status(404).json({
-        message: 'User not found',
+        message: "User not found",
       });
     }
 
@@ -579,39 +586,45 @@ exports.adminProfileUpdate = catchAsyncErrors(async (req, res, next) => {
     // Exclude sensitive fields as necessary
     const { password, ...userWithoutPassword } = updatedUser.toObject();
     res.status(200).json({
-      message: 'Profile updated successfully',
+      message: "Profile updated successfully",
       user: userWithoutPassword,
+      success: true,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-
-
 exports.AdminChangePassowrd = catchAsyncErrors(async (req, res, next) => {
   try {
-    const userId = req.user._id; 
-    const password = req.user.password;// Assuming req.user contains the authenticated user's data
+    const userId = req.user._id;
+    const password = req.user.password; // Assuming req.user contains the authenticated user's data
 
     const { currentPassword, NewPassword } = req.body;
-   if(!currentPassword || !NewPassword){
-      return res.status(400).json({ message: 'Please provide both current and new password' });
+    if (!currentPassword || !NewPassword) {
+      return res.status(400).json({
+        message: "Please provide both current and new password",
+        success: false,
+      });
     }
-  if(password !== currentPassword){
-    return res.status(400).json({ message: 'Current password is incorrect' });
-  }
-    const updatedUser = await UserModel.findByIdAndUpdate(userId, { password: NewPassword }, { new: true });
-
-
+    if (password !== currentPassword) {
+      return res
+        .status(400)
+        .json({ message: "Current password is incorrect", success: false });
+    }
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { password: NewPassword },
+      { new: true }
+    );
 
     res.status(200).json({
-      message: 'successful password change',
-   
+      message: "successful password change",
+      success: true,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });

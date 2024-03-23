@@ -78,7 +78,11 @@ exports.updatetProfile = catchAsyncErrors(async (req, res, next) => {
       );
       res
         .status(200)
-        .json({ message: "Profile updated successfully", updatedDocument });
+        .json({
+          message: "Profile updated successfully",
+          updatedDocument,
+          success: true,
+        });
     }
   } catch (error) {
     console.error(error);

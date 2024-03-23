@@ -86,13 +86,13 @@ function ChangePassword() {
     
         navigate("/login");
       } else {
-        setapiError(loginResponse.msg || "Something went wrong, please try again")
+        setapiError(loginResponse.message || "Something went wrong, please try again")
    
         
       }
     } catch (error) {
     
-      setapiError(error?.data?.msg || "Something went wrong, please try again")
+      setapiError(error?.data?.message || "Something went wrong, please try again")
       
     } finally {
       setisloading(false);
