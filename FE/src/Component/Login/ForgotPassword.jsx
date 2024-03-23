@@ -1,9 +1,11 @@
+import WorkHome from '../../asset/WorkHome.png';
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginApi ,loginwithGoogle,forgotApi} from "../../Api/Service";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {useDispatch} from 'react-redux'
+import logo from '../../asset/logo.png';
 import { styled } from '@mui/system';
 import './style.css';
 import { useGoogleLogin } from '@react-oauth/google';
@@ -18,6 +20,8 @@ const StyledTextField = styled(TextField)({
   width: '100%',
 });
 
+import '../../asset/bootstrap.css'
+
 function ForgotPassword() {
   let location=useLocation()
   const queryParams = new URLSearchParams(location.search);
@@ -27,6 +31,7 @@ function ForgotPassword() {
   const successMessage = queryParams.get("success");
   const [isloading, setisloading] = useState(false);
   const [apiError, setapiError] = useState("");
+  const [apiSuccess, setapiSuccess] = useState("");
   const [isCall, setisCall] = useState(false);
   const navigate = useNavigate();
   const [type, setType] = useState("password");
@@ -67,6 +72,7 @@ function ForgotPassword() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setapiError("")
+    setapiSuccess("")
     setisCall(true);
     try {
       // Check if all fields are filled
@@ -93,8 +99,8 @@ function ForgotPassword() {
       console.log('loginResponse: ', loginResponse);
 
       if (loginResponse.success) {
-    
-        navigate("/login");
+        setapiSuccess(loginResponse.message)
+        // window.location.href = "/login"
       } else {
         setapiError(loginResponse.message || "Something went wrong, please try again")
    
@@ -124,6 +130,9 @@ function ForgotPassword() {
       <div className="container pt-5">
         <div className="row">
           <div className="col-lg-7 col-md-6">
+
+            <a href="/academy">
+              <img style={{ width: "100px", marginBottom: "10px" }} src={logo} alt="" /></a>
             <h2 className="sec-title mb-15">Welcome back</h2>
             <p className="sec-desc">
               Get 150s of Online <span>Courses for Free</span>
@@ -131,7 +140,7 @@ function ForgotPassword() {
             {/* Countdown Start */}
             <div className="devis">
 
-              <img src="assets/images/own/WorkHome.png" alt="" />
+              <img src={WorkHome} alt="" />
             </div>
 
           </div>
@@ -162,6 +171,11 @@ function ForgotPassword() {
                 {apiError && (
                   <div className="alert alert-danger mt-3" role="alert">
                     {apiError}
+                  </div>
+                )}
+                {apiSuccess && (
+                  <div className="alert alert-success mt-3" role="alert">
+                    {apiSuccess}
                   </div>
                 )}
                 

@@ -1,3 +1,5 @@
+import logo from '../../asset/logo.png';
+import WorkHome from '../../asset/WorkHome.png';
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loginApi ,loginwithGoogle,forgotApi,chnagePassord} from "../../Api/Service";
@@ -18,6 +20,7 @@ const StyledTextField = styled(TextField)({
   marginBottom: '15px',
   width: '100%',
 });
+import '../../asset/bootstrap.css'
 
 function ChangePassword() {
   let location=useLocation()
@@ -83,8 +86,8 @@ function ChangePassword() {
       console.log('loginResponse: ', loginResponse);
 
       if (loginResponse.success) {
-    
-        navigate("/login");
+        window.location.href ="/login"
+     
       } else {
         setapiError(loginResponse.message || "Something went wrong, please try again")
    
@@ -114,6 +117,8 @@ function ChangePassword() {
       <div className="container pt-5">
         <div className="row">
           <div className="col-lg-7 col-md-6">
+            <a href="/academy">
+              <img style={{ width: "100px", marginBottom: "10px" }} src={logo} alt="" /></a>
             <h2 className="sec-title mb-15">Welcome back</h2>
             <p className="sec-desc">
               Get 150s of Online <span>Courses for Free</span>
@@ -121,14 +126,14 @@ function ChangePassword() {
             {/* Countdown Start */}
             <div className="devis">
 
-              <img src="assets/images/own/WorkHome.png" alt="" />
+              <img src={WorkHome} alt="" />
             </div>
 
           </div>
           <div className="col-lg-5 col-md-6">
             <div className="registration-form">
               <h4>Send Eamil</h4>
-              <p>verification of change password</p>
+              <p>Verification of change password</p>
               <form onSubmit={handleLogin} method="post">
               <StyledTextField
               type="password"
