@@ -19,6 +19,7 @@ let ALLOWED_ORIGINS = [
   "https://www.artisanuw.com.au",
   "https://artisanuw.com.au",
   "http://localhost:5173",
+  "http://localhost:3000",
 ];
 app.use((req, res, next) => {
   let origin = req.headers.origin;
