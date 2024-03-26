@@ -67,7 +67,9 @@ function InstructorProfile() {
   const navigation = useNavigate();
   const {token,userData:userProfile}=useSelector(state=>state.authReducer)
   const fetchData = async () => {
-    setBearerToken(token)
+
+       setBearerToken(token)
+       
        let endpoint = `/profile`
    
    
@@ -78,7 +80,7 @@ function InstructorProfile() {
      return response?.data
    }
    const { data: userData } = useQuery(
-       ['single'],
+       ['single',],
        fetchData,
        {
          refetchOnWindowFocus: false,
