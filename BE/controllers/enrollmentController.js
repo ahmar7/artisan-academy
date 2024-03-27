@@ -67,7 +67,7 @@ exports.CreateEnroll = catchAsyncErrors(async (req, res, next) => {
       }
   
 
-
+      const allprofile = await ProfileModel.find();
       
       // Array to store enriched course data
       const enrichedCourses = [];
@@ -103,7 +103,7 @@ exports.CreateEnroll = catchAsyncErrors(async (req, res, next) => {
         enrichedCourses.push(enrichedCourse);
       }
 
-      const allprofile = await ProfileModel.find();
+    
   
       res.status(200).json({
         message: 'User data retrieved successfully',

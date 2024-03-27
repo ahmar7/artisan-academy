@@ -17,6 +17,7 @@ let ALLOWED_ORIGINS = [
   "https://www.underwritingacademy.com.au",
   "https://artisan-academy.vercel.app",
   "https://www.artisanuw.com.au",
+  "https://course-admin-master-six.vercel.app/",
   "https://artisanuw.com.au",
   "https://course-admin-master-six.vercel.app",
   "https://www.course-admin-master-six.vercel.app",
