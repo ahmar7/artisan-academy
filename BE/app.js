@@ -18,6 +18,8 @@ let ALLOWED_ORIGINS = [
   "https://artisan-academy.vercel.app",
   "https://www.artisanuw.com.au",
   "https://artisanuw.com.au",
+  "https://course-admin-master-six.vercel.app",
+  "https://www.course-admin-master-six.vercel.app",
   "http://localhost:5173",
   "http://localhost:3000",
 ];
